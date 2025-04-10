@@ -1,0 +1,70 @@
+{
+    "breakfast": [
+        {
+            "name": "kettle",
+            "options": [
+                "Quick Oats | Cream of Wheat | Dried Fruits, Sweetener and Granola"
+            ]
+        }
+    ],
+    "lunch": [
+        {
+            "name": "kettle",
+            "options": [
+                "Beef Chili with Wild Rice",
+                "Chefs Choice"
+            ]
+        },
+        {
+            "name": "home cookin'",
+            "options": [
+                "Teriyaki Chicken with Grilled Pineapple",
+                "Teriyaki Tofu with Grilled Pineapple"
+            ]
+        },
+        {
+            "name": "6th st. grill",
+            "options": [
+                "Bbq Roasted Beef Sandwich",
+                "Plant-based Bbq Beef Sandwich"
+            ]
+        },
+        {
+            "name": "pizzeria",
+            "options": [
+                "Pepperoni Pizza",
+                "Cheese Pizza"
+            ]
+        }
+    ],
+    "dinner": [
+        {
+            "name": "kettle",
+            "options": [
+                "Beef Chili with Wild Rice",
+                "Chefs Choice"
+            ]
+        },
+        {
+            "name": "home cookin'",
+            "options": [
+                "Baked Pasta and Sausage Casserole",
+                "Baked Pasta with Plant-based Beef Casserole"
+            ]
+        },
+        {
+            "name": "6th st. grill",
+            "options": [
+                "Chicken Quesadilla",
+                "Vegetarian Grill Cheese Quesadilla"
+            ]
+        },
+        {
+            "name": "pizzeria",
+            "options": [
+                "Pepperoni Pizza",
+                "Cheese Pizza"
+            ]
+        }
+    ]
+}

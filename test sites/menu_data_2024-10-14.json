@@ -1,0 +1,103 @@
+{
+    "breakfast": [
+        {
+            "name": "kettle",
+            "options": [
+                "Quick Oats | Dried Fruits, Sweetener and Granola",
+                "Cream of Wheat"
+            ]
+        },
+        {
+            "name": "home cookin'",
+            "options": [
+                "Hot Breakfast Bar"
+            ]
+        },
+        {
+            "name": "chef's table",
+            "options": [
+                "Biola's Broken Egg Bar"
+            ]
+        },
+        {
+            "name": "pizzeria",
+            "options": [
+                "Biscuits"
+            ]
+        }
+    ],
+    "lunch": [
+        {
+            "name": "kettle",
+            "options": [
+                "Lentils Soup",
+                "Chicken and Rice Soup"
+            ]
+        },
+        {
+            "name": "home cookin'",
+            "options": [
+                "Roasted Pork Chili Verde",
+                "White Bean Chili Verde"
+            ]
+        },
+        {
+            "name": "chef's table",
+            "options": [
+                "Tahini Caesar Grilled Chicken Salad",
+                "Tahini Caesar Grilled Tofu Salad"
+            ]
+        },
+        {
+            "name": "6th st. grill",
+            "options": [
+                "Beef Nachos",
+                "Refried Bean Nachos"
+            ]
+        },
+        {
+            "name": "pizzeria",
+            "options": [
+                "Pepperoni Pizza",
+                "Cheese Pizza"
+            ]
+        }
+    ],
+    "dinner": [
+        {
+            "name": "kettle",
+            "options": [
+                "Lentils Soup",
+                "Chicken and Rice Soup"
+            ]
+        },
+        {
+            "name": "home cookin'",
+            "options": [
+                "Butter Chicken",
+                "Tofu Butter Curry"
+            ]
+        },
+        {
+            "name": "chef's table",
+            "options": [
+                "Pork Stir Fry with Yaki Soba Noodles",
+                "Tofu Stir Fried with Yaki Soba"
+            ]
+        },
+        {
+            "name": "6th st. grill",
+            "options": [
+                "Louisiana Hot Links",
+                "Beyond Beef Bratwurst"
+            ]
+        },
+        {
+            "name": "pizzeria",
+            "options": [
+                "Pepperoni Pizza",
+                "Cheese Pizza"
+            ]
+        }
+    ]
+}
