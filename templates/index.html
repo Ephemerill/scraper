@@ -119,25 +119,27 @@
             </div>
         </div>
     </div>
-
+    <!-- Keep the Bootstrap JS include -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Replace the entire <script> block below with this updated version -->
     <script>
         // --- Time Display Script ---
         function displayTime() {
-            const now = new Date();
-            let hours = now.getHours();
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const dayOfWeek = daysOfWeek[now.getDay()];
-            const period = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12; // Hour '0' should be '12'
-            const currentTime = `${dayOfWeek}, ${hours}:${minutes} ${period}`;
-            const timeElement = document.getElementById('current-time');
-            if (timeElement) {
-                timeElement.textContent = currentTime;
-            }
+            // ... (Keep your existing displayTime function exactly as it is) ...
+             const now = new Date();
+             let hours = now.getHours();
+             const minutes = now.getMinutes().toString().padStart(2, '0');
+             const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+             const dayOfWeek = daysOfWeek[now.getDay()];
+             const period = hours >= 12 ? 'PM' : 'AM';
+             hours = hours % 12;
+             hours = hours ? hours : 12; // Hour '0' should be '12'
+             const currentTime = `${dayOfWeek}, ${hours}:${minutes} ${period}`;
+             const timeElement = document.getElementById('current-time');
+             if (timeElement) {
+                 timeElement.textContent = currentTime;
+             }
         }
         // Initial call and interval
         displayTime();
@@ -147,235 +149,136 @@
         document.addEventListener('DOMContentLoaded', function() {
 
             // --- Tab Activation Logic ---
-            const now = new Date();
-            const currentHour = now.getHours();
-            let currentMealPeriod = 'breakfast'; // Default
+            // ... (Keep your existing Tab Activation Logic exactly as it is) ...
+             const now = new Date();
+             const currentHour = now.getHours();
+             let currentMealPeriod = 'breakfast'; // Default
 
-            // Determine meal period based on time (adjust ranges if needed)
-            if (currentHour >= 7 && currentHour < 11) { currentMealPeriod = 'breakfast'; }
-            else if (currentHour >= 11 && currentHour < 16) { currentMealPeriod = 'lunch'; } // Example: Lunch until 4 PM
-            else if (currentHour >= 16 && currentHour < 20) { currentMealPeriod = 'dinner'; } // Example: Dinner 4 PM to 8 PM
-            // Outside these hours, it will default to breakfast or the first available tab
+             if (currentHour >= 7 && currentHour < 11) { currentMealPeriod = 'breakfast'; }
+             else if (currentHour >= 11 && currentHour < 16) { currentMealPeriod = 'lunch'; }
+             else if (currentHour >= 16 && currentHour < 20) { currentMealPeriod = 'dinner'; }
 
-            const targetTabButtonId = currentMealPeriod + '-tab';
-            const targetPaneId = currentMealPeriod;
-            const targetTabButton = document.getElementById(targetTabButtonId);
-            const targetPane = document.getElementById(targetPaneId);
-            const allTabButtons = document.querySelectorAll('#menuTabs .nav-link');
-            const allTabPanes = document.querySelectorAll('#menuTabsContent .tab-pane');
+             const targetTabButtonId = currentMealPeriod + '-tab';
+             const targetPaneId = currentMealPeriod;
+             const targetTabButton = document.getElementById(targetTabButtonId);
+             const targetPane = document.getElementById(targetPaneId);
+             const allTabButtons = document.querySelectorAll('#menuTabs .nav-link');
+             const allTabPanes = document.querySelectorAll('#menuTabsContent .tab-pane');
 
-            // Deactivate all tabs first
-            allTabButtons.forEach(button => {
-                button.classList.remove('active');
-                button.setAttribute('aria-selected', 'false');
-            });
-            allTabPanes.forEach(pane => {
-                pane.classList.remove('show', 'active');
-            });
+             allTabButtons.forEach(button => {
+                 button.classList.remove('active');
+                 button.setAttribute('aria-selected', 'false');
+             });
+             allTabPanes.forEach(pane => {
+                 pane.classList.remove('show', 'active');
+             });
 
-            // Activate the correct tab based on time or fallback to first
-            if (targetTabButton && targetPane) {
-                targetTabButton.classList.add('active');
-                targetTabButton.setAttribute('aria-selected', 'true');
-                targetPane.classList.add('show', 'active');
-            } else {
-                 // Fallback: Activate the first tab if the time-based one isn't found/available
-                 const firstTabButton = document.querySelector('#menuTabs .nav-link');
-                 const firstPaneSelector = firstTabButton?.getAttribute('data-bs-target');
-                 const firstPane = firstPaneSelector ? document.querySelector(firstPaneSelector) : null;
-                 if (firstTabButton && firstPane){
-                     firstTabButton.classList.add('active');
-                     firstTabButton.setAttribute('aria-selected', 'true');
-                     firstPane.classList.add('show', 'active');
-                 }
-            }
+             if (targetTabButton && targetPane) {
+                 targetTabButton.classList.add('active');
+                 targetTabButton.setAttribute('aria-selected', 'true');
+                 targetPane.classList.add('show', 'active');
+             } else {
+                  const firstTabButton = document.querySelector('#menuTabs .nav-link');
+                  const firstPaneSelector = firstTabButton?.getAttribute('data-bs-target');
+                  const firstPane = firstPaneSelector ? document.querySelector(firstPaneSelector) : null;
+                  if (firstTabButton && firstPane){
+                      firstTabButton.classList.add('active');
+                      firstTabButton.setAttribute('aria-selected', 'true');
+                      firstPane.classList.add('show', 'active');
+                  }
+             }
 
             // --- Chat Messaging Logic ---
-            const chatMessages = document.getElementById('chat-messages');
-            const userInput = document.getElementById('user-input');
-            const sendButton = document.getElementById('send-button');
-            // IMPORTANT: Replace with your actual N8N Webhook URL
-            const n8nWebhookUrl = 'https://n8n.biolawizard.com/webhook/ddaed16e-73be-4de6-b3e2-8e246f0765fc'; // <-- REPLACE IF NEEDED
+            // ... (Keep your existing Chat Messaging Logic exactly as it is) ...
+             const chatMessages = document.getElementById('chat-messages');
+             const userInput = document.getElementById('user-input');
+             const sendButton = document.getElementById('send-button');
+             const n8nWebhookUrl = 'https://n8n.biolawizard.com/webhook/ddaed16e-73be-4de6-b3e2-8e246f0765fc'; // <-- REPLACE IF NEEDED
 
-            // Function to add a message to the chat window
-            function addMessage(text, sender) {
-                 if (!chatMessages) return; // Safety check
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
-                messageDiv.textContent = text; // Use textContent to prevent HTML injection
-                chatMessages.appendChild(messageDiv); // Append to bottom (due to flex-direction: column-reverse)
-                // Scroll to the bottom to show the new message
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
+             function addMessage(text, sender) { /* ...keep function content... */ }
+             function addErrorMessage(text) { /* ...keep function content... */ }
+             async function sendMessage() { /* ...keep function content... */ }
 
-            // Function to add an error message
-            function addErrorMessage(text) {
-                 if (!chatMessages) return;
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message', 'error-message');
-                messageDiv.textContent = text;
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-
-            // Function to send message to backend
-            async function sendMessage() {
-                if (!userInput || !sendButton) return; // Safety check
-
-                const messageText = userInput.value.trim();
-                if (!messageText) return;
-
-                if (!n8nWebhookUrl || n8nWebhookUrl === 'YOUR_N8N_WEBHOOK_URL_HERE' || n8nWebhookUrl.includes('placeholder')) {
-                    addErrorMessage('Error: Chat service URL is not configured.');
-                    console.error("Chat service URL not configured:", n8nWebhookUrl);
-                    return;
-                }
-
-                addMessage(messageText, 'user');
-                userInput.value = ''; // Clear input
-                sendButton.disabled = true; // Disable button during request
-                userInput.disabled = true; // Disable input during request
-
-                // Add thinking indicator
-                const thinkingDiv = document.createElement('div');
-                thinkingDiv.classList.add('message', 'bot-message');
-                thinkingDiv.textContent = '...';
-                thinkingDiv.id = 'thinking-indicator';
-                chatMessages.appendChild(thinkingDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+             if (sendButton) sendButton.addEventListener('click', sendMessage);
+             if (userInput) userInput.addEventListener('keypress', (event) => { /* ...keep function content... */ });
 
 
-                try {
-                    const response = await fetch(n8nWebhookUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ message: messageText }) // Ensure payload matches N8N expectation
-                    });
-
-                    document.getElementById('thinking-indicator')?.remove(); // Remove thinking indicator
-
-                    if (!response.ok) {
-                        // Try to get error details from response if possible
-                        let errorDetails = `Server responded with status ${response.status}`;
-                        try {
-                             // Check content type before parsing as JSON
-                             const contentType = response.headers.get("content-type");
-                             if (contentType && contentType.indexOf("application/json") !== -1) {
-                                const errorData = await response.json();
-                                // Adjust based on actual error structure from N8N
-                                errorDetails += `: ${errorData.message || JSON.stringify(errorData) || 'No details provided.'}`;
-                             } else {
-                                 const errorText = await response.text();
-                                 errorDetails += `: ${errorText || 'No details provided.'}`;
-                             }
-                        } catch (e) {
-                            console.error("Error parsing error response:", e);
-                            /* Ignore if response is not JSON or text */
-                        }
-                        throw new Error(errorDetails);
-                    }
-
-                    const data = await response.json();
-                    // IMPORTANT: Adjust 'data.reply' if your N8N workflow returns the response differently
-                    if (data && data.reply) {
-                        addMessage(data.reply, 'bot');
-                    } else {
-                        console.warn("Received response from server, but 'reply' field was missing or empty:", data);
-                        addErrorMessage('Received an empty or unexpected response from the server.');
-                    }
-                } catch (error) {
-                    console.error("Chat send error:", error);
-                    document.getElementById('thinking-indicator')?.remove();
-                    addErrorMessage(`Error: ${error.message || 'Could not connect to chat service.'}`);
-                } finally {
-                    // Re-enable input and button
-                    sendButton.disabled = false;
-                    userInput.disabled = false;
-                    userInput.focus(); // Focus input for next message
-                }
-            }
-
-            // Attach event listeners for sending messages
-            if (sendButton) {
-                sendButton.addEventListener('click', sendMessage);
-            }
-            if (userInput) {
-                userInput.addEventListener('keypress', (event) => {
-                    // Send on Enter, but not if Shift is pressed (allows newline)
-                    if (event.key === 'Enter' && !event.shiftKey) {
-                        event.preventDefault(); // Prevent default Enter behavior (e.g., form submission)
-                        sendMessage();
-                    }
-                });
-            }
-
-            // --- Settings and Chat Visibility Control ---
+            // --- Settings and Visibility Control ---
             const chatVisibilityToggle = document.getElementById('chatVisibilityToggle');
-            const chatSectionWrapper = document.getElementById('chat-section-wrapper');
             const chatToggleButton = document.getElementById('chat-toggle-button'); // Arrow
             const chatContainer = document.getElementById('chat-container'); // Box
+            // Note: chatSectionWrapper is fetched inside applyChatVisibility if needed
 
+            // ***** MODIFIED FUNCTION with new class name *****
             // Function to apply visibility based on the setting
             const applyChatVisibility = (isVisible) => {
-                // Ensure elements exist before proceeding
-                if (!chatSectionWrapper || !chatVisibilityToggle) {
-                    console.error("Cannot apply chat visibility: Required elements missing.");
-                    return;
-                }
-                // console.log(`Applying visibility: ${isVisible}`); // Debug log
-                if (isVisible) {
-                    chatSectionWrapper.classList.remove('hidden');
-                    chatVisibilityToggle.checked = true;
-                    // Optional: Automatically expand chat when made visible? Decide based on UX preference.
-                    // if (chatToggleButton && chatContainer && !chatContainer.classList.contains('expanded')) {
-                    //      chatToggleButton.classList.add('expanded');
-                    //      chatContainer.classList.add('expanded');
-                    // }
-                } else {
-                    chatSectionWrapper.classList.add('hidden');
-                    chatVisibilityToggle.checked = false;
-                    // Also ensure the inner chat is collapsed when hiding the section
-                    chatToggleButton?.classList.remove('expanded');
-                    chatContainer?.classList.remove('expanded');
-                }
+                 // Check for the essential toggle switch first
+                 if (!chatVisibilityToggle) {
+                     console.error("Cannot apply AI visibility: Toggle switch element missing.");
+                     return;
+                 }
+                 // console.log(`Applying visibility: ${isVisible}`); // Debug log
+
+                 // --- Logic for the main Chat Section (assuming it shouldn't have the ai-toggle class) ---
+                 const chatSectionWrapper = document.getElementById('chat-section-wrapper');
+                 if (chatSectionWrapper) {
+                     if (isVisible) {
+                         chatSectionWrapper.classList.remove('hidden');
+                     } else {
+                         chatSectionWrapper.classList.add('hidden');
+                         chatToggleButton?.classList.remove('expanded');
+                         chatContainer?.classList.remove('expanded');
+                     }
+                 }
+
+                 // --- Generic Logic for ALL elements marked with the NEW control class ---
+                 // ***** Use the new class name 'ai-toggle' here *****
+                 const otherToggleableElements = document.querySelectorAll('.ai-toggle');
+                 otherToggleableElements.forEach(element => {
+                      // No need to check against chat wrapper ID if it won't have the ai-toggle class
+                      if (isVisible) {
+                         element.classList.remove('hidden');
+                     } else {
+                         element.classList.add('hidden');
+                     }
+                 });
+
+                 // --- Update the toggle switch state (always do this) ---
+                 chatVisibilityToggle.checked = isVisible;
             };
+            // ***** END OF MODIFIED FUNCTION *****
+
 
             // --- Initial Load ---
-            // Check localStorage for the saved preference. Default to 'false' (hidden).
+            // Use the same localStorage key 'chatVisible', but apply logic using the modified function
             const savedVisibility = localStorage.getItem('chatVisible') || 'false';
-            // console.log(`Initial chatVisible from localStorage: ${savedVisibility}`); // Debug log
-            // Apply the state found in localStorage or the default
             applyChatVisibility(savedVisibility === 'true');
 
             // --- Event Listener for the Settings Toggle Switch ---
+            // Calls the modified function
             if (chatVisibilityToggle) {
                 chatVisibilityToggle.addEventListener('change', function(event) {
-                    // 'event.target.checked' reliably gives the new state of the checkbox
                     const isVisible = event.target.checked;
-                    // console.log(`Settings toggle changed. New state: ${isVisible}`); // Debug log
                     applyChatVisibility(isVisible);
-                    // Save the new preference to localStorage
+                    // Still save using the original key, unless you want separate saved states
                     localStorage.setItem('chatVisible', isVisible ? 'true' : 'false');
-                    // console.log(`Saved chatVisible=${isVisible ? 'true' : 'false'} to localStorage.`); // Debug log
                 });
             } else {
-                console.error("Chat visibility toggle switch not found.");
+                console.error("AI visibility toggle switch not found.");
             }
 
             // --- Event Listener for the Arrow Toggle Button ---
-            // This button only expands/collapses the chat box *if* the section is visible
-            if (chatToggleButton && chatContainer && chatSectionWrapper) {
+            // This logic remains the same
+            if (chatToggleButton && chatContainer) {
                  chatToggleButton.addEventListener('click', function() {
-                     // Only allow toggling if the parent section is NOT hidden
-                     if (!chatSectionWrapper.classList.contains('hidden')) {
+                     const chatSectionWrapper = document.getElementById('chat-section-wrapper');
+                     if (chatSectionWrapper && !chatSectionWrapper.classList.contains('hidden')) {
                          const isExpanding = !chatContainer.classList.contains('expanded');
                          chatToggleButton.classList.toggle('expanded', isExpanding);
                          chatContainer.classList.toggle('expanded', isExpanding);
                           if (isExpanding) {
-                              userInput?.focus(); // Focus input when expanding
+                              userInput?.focus();
                           }
-                     } else {
-                          // console.log("Arrow clicked, but chat section is hidden by settings."); // Debug log
                      }
                  });
              } else {
