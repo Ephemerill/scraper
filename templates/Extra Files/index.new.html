@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biola Wizard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>        
+        /* Falling stars animation */
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle 3s infinite;
+        }
+
+        .star::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Specific animation durations for each star */
+        .star:nth-child(1) { animation-delay: 0.1s; }
+        .star:nth-child(2) { animation-delay: 0.5s; }
+        .star:nth-child(3) { animation-delay: 0.8s; }
+        .star:nth-child(4) { animation-delay: 1.2s; }
+        .star:nth-child(5) { animation-delay: 1.5s; }
+        .star:nth-child(6) { animation-delay: 0.3s; }
+        .star:nth-child(7) { animation-delay: 0.7s; }
+        .star:nth-child(8) { animation-delay: 1.0s; }
+        .star:nth-child(9) { animation-delay: 1.3s; }
+        .star:nth-child(10) { animation-delay: 0.2s; }
+
+        /* Falling star effect */
+        .falling-star {
+            width: 1px;
+            height: 100px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
+            position: absolute;
+            animation: fall 5s linear infinite;
+        }
+        .main-content-container {
+            background-color: #fff; /* White background */
+            padding: 1rem; /* Use Bootstrap's p-3 equivalent */
+            border-radius: var(--bs-border-radius); /* Use Bootstrap's rounded equivalent */
+            position: relative; /* Needed for absolute positioning if used, but flexbox is better here */
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .nav-tabs {
+            border-top: 1px solid #dee2e6;
+            border-bottom: none;
+            justify-content: start; /* Left-align tabs */
+            order: 2; /* Order after tab content */
+        }
+
+         .nav-tabs .nav-link {
+            border-bottom: 2px solid transparent;
+            border-radius: 0;
+            color: white;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        .nav-tabs .nav-link.active {
+            border-top: 1px solid #dee2e6;
+            border-left: 1px solid #dee2e6;
+            border-right: 1px solid #dee2e6;
+            border-bottom: 2px solid #93c5fd; /* Make the bottom border visible and thicker */
+            background-color: #3b82f6;
+            color: black; /* Ensure active tab text color is black */
+        }
+         .nav-tabs .nav-link:not(.active) {
+            background-color: transparent;
+            border-color: transparent;
+        }
+
+        .tab-content {
+             order: 1; /* Order before tabs */
+             min-height: 150px; /* Give some default space */
+        }
+
+         .thick-hr {
+            border-color: #a9a9a9 !important; /* Override potential bootstrap styles */
+            border-width: 5px !important;
+            opacity: 1; /* Make sure it's fully opaque */
+            order: 3; /* After tabs */
+            margin-top: 1rem; /* Add space above */
+            margin-bottom: 0.5rem; /* Reduce space below */
+         }
+
+        #chat-toggle-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center children horizontally */
+            width: 100%;
+            order: 4; /* After HR */
+        }
+
+        #chat-toggle-button {
+            width: 30px; /* Size of the arrow */
+            height: 15px;
+            background-color: black;
+            clip-path: polygon(0% 0%, 100% 0%, 50% 100%); /* Downward arrow shape */
+            cursor: pointer;
+            margin-bottom: 10px; /* Space between arrow and chat window */
+            transition: transform 0.3s ease; /* Smooth rotation */
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        #chat-toggle-button.expanded {
+             transform: rotate(180deg); /* Point arrow upwards when expanded */
+        }
+
+        #chat-container {
+            width: 95%; /* Almost full width, leaves small gaps */
+            max-width: 95%; /* Ensure it doesn't exceed parent */
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            border: none;
+            box-shadow: none;
+            margin: 0 auto;
+            padding-top: 0;
+            padding-bottom: 0;
+            transition: max-height 0.5s ease-out, opacity 0.5s ease-out, border-width 0s ease-out 0.5s, box-shadow 0.5s ease-out, padding 0.5s ease-out;
+            background-color: inherit;
+            display: flex;
+            flex-direction: column; /* <<< Keep column direction for container */
+            border-radius: 8px;
+        }
+
+        #chat-container.expanded {
+            max-height: 400px; /* Adjust as needed */
+            opacity: 1;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 10px;
+            padding-top: 0; /* <<< Adjust padding if input area has it */
+            padding-bottom: 0; /* <<< Adjust padding if messages area has it */
+            transition: max-height 0.5s ease-in, opacity 0.5s ease-in, border-width 0s ease-in, box-shadow 0.5s ease-in, padding 0.5s ease-in;
+        }
+
+        /* --- MODIFIED: Input Area Styles --- */
+        #chat-input-area {
+            display: flex;
+            /* border-top: 1px solid #ccc; */ /* <<< REMOVED border-top */
+            border-bottom: 1px solid #ccc;   /* <<< ADDED border-bottom for separation */
+            padding: 10px;
+            background-color: inherit;
+            flex-shrink: 0; /* Prevent input area from shrinking */
+            /* order: 1; */ /* <<< HTML order is preferred, remove if not needed */
+        }
+
+        #user-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            margin-right: 10px;
+            outline: none;
+        }
+        #send-button {
+            padding: 10px 20px;
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        #send-button:hover {
+            background-color: #0a58ca;
+        }
+        #send-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* --- MODIFIED: Chat Message Area Styles --- */
+        #chat-messages {
+            flex-grow: 1; /* Takes remaining space */
+            overflow-y: auto; /* Allows scrolling */
+            padding: 15px 15px 10px 15px; /* <<< ADDED top padding, adjusted bottom */
+            display: flex;
+            flex-direction: column; /* <<< Keep column direction */
+            gap: 10px;
+            min-height: 50px;
+            /* order: 2; */ /* <<< HTML order is preferred, remove if not needed */
+        }
+
+        /* --- Message Bubble Styles (Unchanged, align-self works correctly here) --- */
+        .message {
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 85%;
+            word-wrap: break-word;
+            flex-shrink: 0;
+        }
+        .user-message {
+            background-color: #0d6efd;
+            color: white;
+            align-self: flex-end; /* Keep user messages to the right */
+            border-bottom-right-radius: 5px;
+        }
+        .bot-message {
+            background-color: #e9e9eb;
+            color: #333;
+            align-self: flex-start; /* Keep bot messages to the left */
+            border-bottom-left-radius: 5px;
+        }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            align-self: center;
+            font-size: 0.9em;
+            text-align: center;
+            width: 90%;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white">
+    <!-- Falling Stars -->
+    <div class="star" style="top: 20%; left: 10%;"></div>
+    <div class="star" style="top: 60%; left: 30%;"></div>
+    <div class="star" style="top: 40%; left: 50%;"></div>
+    <div class="star" style="top: 80%; left: 70%;"></div>
+    <div class="star" style="top: 10%; left: 90%;"></div>
+    <div class="star" style="top: 50%; left: 20%;"></div>
+    <div class="star" style="top: 70%; left: 40%;"></div>
+    <div class="star" style="top: 30%; left: 60%;"></div>
+    <div class="star" style="top: 90%; left: 80%;"></div>
+    <div class="star" style="top: 15%; left: 5%;"></div>
+    <div class="star" style="top: 45%; left: 25%;"></div>
+
+    <div class="container mx-auto mt-5 p-4 rounded-lg shadow-lg bg-gray-800">
+        <h1 class="text-3xl font-bold text-center text-blue-300 mb-4">Biola Wizard 1.0</h1>
+        <div class="main-content-container bg-gray-700 p-6 rounded-lg shadow-md">
+            <div class="d-flex justify-content-between">
+                <h2 class="text-secondary" id="current-time"></h2>
+                <!-- Weather data still comes from backend -->
+                <h2 class="text-secondary">
+                    {% if weather and weather['temperature'] and weather['temperature'][0] %}
+                        {{ weather['temperature'][0]['temperature'] }}
+                    {% else %}
+                        --°
+                    {% endif %}
+                </h2>
+            </div>
+            <hr class="my-2 border-gray-500 border-2">
+            <div class="tab-content mt-3" id="menuTabsContent">
+                 <!-- The menu content uses the full 'menu' dictionary passed from Flask -->
+                 <div class="tab-pane fade" id="breakfast" role="tabpanel" aria-labelledby="breakfast-tab">
+                    <h2>Breakfast Menu:</h2>
+                    {% if menu and menu.breakfast %}
+                        {% for item in menu.breakfast %}
+                            <h3>{{ item.name | title }}</h3>
+                            <ul class="text-white">
+                                {% for option in item.options %}
+                                    <li class="text-white">{{ option }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endfor %}
+                    {% else %}
+                        <p>Breakfast menu not available.</p>
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade" id="lunch" role="tabpanel" aria-labelledby="lunch-tab">
+                    <h2>Lunch Menu:</h2>
+                     {% if menu and menu.lunch %}
+                        {% for item in menu.lunch %}
+                            <h3>{{ item.name | title }}</h3>
+                            <ul class="text-white">
+                                {% for option in item.options %}
+                                    <li class="text-white">{{ option }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endfor %}
+                    {% else %}
+                        <p>Lunch menu not available.</p>
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade" id="dinner" role="tabpanel" aria-labelledby="dinner-tab">
+                    <h2>Dinner Menu:</h2>
+                     {% if menu and menu.dinner %}
+                        {% for item in menu.dinner %}
+                            <h3>{{ item.name | title }}</h3>
+                            <ul class="text-white">
+                                {% for option in item.options %}
+                                    <li class="text-white">{{ option }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endfor %}
+                    {% else %}
+                        <p>Dinner menu not available.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <ul class="flex justify-start space-x-4 mt-4" id="menuTabs" role="tablist">
+                <li role="presentation">
+                    <button class="nav-link px-4 py-2 rounded-t-lg bg-gray-600 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300 text-white" id="breakfast-tab" data-bs-toggle="tab" data-bs-target="#breakfast" type="button" role="tab" aria-controls="breakfast" aria-selected="false">Breakfast</button>
+                </li>
+                <li role="presentation">
+                    <button class="nav-link px-4 py-2 rounded-t-lg bg-gray-600 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300 text-white" id="lunch-tab" data-bs-toggle="tab" data-bs-target="#lunch" type="button" role="tab" aria-controls="lunch" aria-selected="false">Lunch</button>
+                </li>
+                <li role="presentation">
+                    <button class="nav-link px-4 py-2 rounded-t-lg bg-gray-600 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300 text-white" id="dinner-tab" data-bs-toggle="tab" data-bs-target="#dinner" type="button" role="tab" aria-controls="dinner" aria-selected="false">Dinner</button>
+                </li>
+            </ul>
+
+            <hr class="thick-hr">
+
+            <div id="chat-toggle-wrapper">
+                <div id="chat-toggle-button" title="Toggle Chat"></div>
+                <div id="chat-container" class="bg-gray-800 rounded-lg shadow-md">
+                    <div id="chat-input-area" class="flex items-center p-4">
+                        <input type="text" id="user-input" placeholder="Type your message..." class="flex-grow bg-gray-700 text-white rounded-full py-2 px-4 mr-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button id="send-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline">Send</button>
+                    </div>
+                    <div id="chat-messages" class="p-4 overflow-y-auto h-64">
+                        <!-- Chat messages will be added here by JavaScript -->
+                    </div>
+                </div>
+           </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // --- Time Display Script (Unchanged) ---
+        function displayTime() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const dayOfWeek = daysOfWeek[now.getDay()];
+            const period = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // Hour '0' should be '12'
+            const currentTime = `${dayOfWeek}, ${hours}:${minutes} ${period}`;
+            const timeElement = document.getElementById('current-time');
+            if (timeElement) {
+                 timeElement.textContent = currentTime;
+            }
+        }
+        displayTime();
+        setInterval(displayTime, 60000); // Update every minute
+
+        // --- NEW: Tab Activation Script using Client-Side Time ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // Determine meal period based on client's local time
+            const now = new Date();
+            const currentHour = now.getHours(); // 0-23
+            let currentMealPeriod;
+
+            // Define meal period time ranges (adjust as needed)
+            if (currentHour >= 7 && currentHour < 11) { // 7:00 AM to 10:59 AM
+                currentMealPeriod = 'breakfast';
+            } else if (currentHour >= 11 && currentHour < 16) { // 11:00 AM to 3:59 PM
+                currentMealPeriod = 'lunch';
+            } else if (currentHour >= 16 && currentHour < 20) { // 4:00 PM to 7:59 PM
+                currentMealPeriod = 'dinner';
+            } else {
+                // Default for times outside the main meal periods (e.g., late night, early morning)
+                // Often makes sense to default to the next available or a common one like lunch/breakfast
+                currentMealPeriod = 'breakfast'; // Defaulting to breakfast
+                console.log(`Current hour (${currentHour}) is outside defined meal periods. Defaulting to ${currentMealPeriod}.`);
+            }
+
+            // Construct the IDs for the target tab button and pane
+            const targetTabButtonId = currentMealPeriod + '-tab'; // e.g., 'breakfast-tab'
+            const targetPaneId = currentMealPeriod;        // e.g., 'breakfast'
+
+            // Find the target tab button and pane elements
+            const targetTabButton = document.getElementById(targetTabButtonId);
+            const targetPane = document.getElementById(targetPaneId);
+
+            // Find all tab buttons and panes to remove existing 'active'/'show' classes
+            const allTabButtons = document.querySelectorAll('#menuTabs .nav-link');
+            const allTabPanes = document.querySelectorAll('#menuTabsContent .tab-pane');
+
+            // Remove active/show classes from all tabs and panes first
+            allTabButtons.forEach(button => {
+                button.classList.remove('active');
+                button.setAttribute('aria-selected', 'false');
+            });
+            allTabPanes.forEach(pane => {
+                pane.classList.remove('show', 'active');
+            });
+
+            // If the target elements exist based on local time, make them active
+            if (targetTabButton && targetPane) {
+                targetTabButton.classList.add('active');
+                targetTabButton.setAttribute('aria-selected', 'true');
+                targetPane.classList.add('show', 'active');
+            } else {
+                // Fallback if the determined meal_period doesn't match any tab
+                // (Shouldn't happen with the default logic above, but good practice)
+                console.warn(`Could not find tab or pane for meal period: ${currentMealPeriod}. Defaulting to first available tab.`);
+                 const firstTabButton = document.querySelector('#menuTabs .nav-link');
+                 const firstPaneSelector = firstTabButton ? firstTabButton.getAttribute('data-bs-target') : null;
+                 const firstPane = firstPaneSelector ? document.querySelector(firstPaneSelector) : null;
+
+                 if (firstTabButton && firstPane){
+                    firstTabButton.classList.add('active');
+                    firstTabButton.setAttribute('aria-selected', 'true');
+                    firstPane.classList.add('show', 'active');
+                 } else {
+                     console.error("Could not find elements for fallback tab activation.");
+                 }
+            }
+        });
+        // --- End of NEW Tab Activation Script ---
+
+        // --- Chat Toggle Script (Unchanged) ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.getElementById('chat-toggle-button');
+            const chatContainer = document.getElementById('chat-container');
+
+            if (toggleButton && chatContainer) {
+                toggleButton.addEventListener('click', function() {
+                    toggleButton.classList.toggle('expanded');
+                    chatContainer.classList.toggle('expanded');
+                    if (chatContainer.classList.contains('expanded')) {
+                        document.getElementById('user-input').focus();
+                    }
+                });
+            } else {
+                console.error("Chat toggle button or container not found!");
+            }
+        });
+
+        // --- Chat Messaging Script (Unchanged) ---
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const n8nWebhookUrl = 'https://n8n.biolawizard.com/webhook/ddaed16e-73be-4de6-b3e2-8e246f0765fc';
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', 'rounded-lg', 'py-2', 'px-3', 'mb-2', sender === 'user' ? 'user-message' : 'bot-message');
+            messageDiv.textContent = text;
+            chatMessages.insertBefore(messageDiv, chatMessages.firstChild);
+            chatMessages.scrollTop = 0;
+        }
+    
+        function addErrorMessage(text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', 'error-message');
+            messageDiv.textContent = text;
+            chatMessages.insertBefore(messageDiv, chatMessages.firstChild);
+            chatMessages.scrollTop = 0;
+        }
+
+        async function sendMessage() {
+            const messageText = userInput.value.trim();
+            if (!messageText) return;
+
+            if (n8nWebhookUrl === 'YOUR_N8N_WEBHOOK_URL_HERE') {
+                addErrorMessage('Error: n8n webhook URL is not configured.');
+                return;
+            }
+
+            addMessage(messageText, 'user');
+            userInput.value = '';
+            sendButton.disabled = true;
+            userInput.disabled = true;
+
+            const thinkingDiv = document.createElement('div');
+            thinkingDiv.classList.add('message', 'bot-message', 'bg-gray-600', 'text-gray-300');
+            thinkingDiv.textContent = '...';
+            thinkingDiv.id = 'thinking-indicator';
+            chatMessages.insertBefore(thinkingDiv, chatMessages.firstChild);
+            chatMessages.scrollTop = 0;
+
+            try {
+                const response = await fetch(n8nWebhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: messageText })
+                });
+
+                document.getElementById('thinking-indicator')?.remove();
+
+                if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+
+                const data = await response.json();
+                if (data?.reply) {
+                    addMessage(data.reply, 'bot');
+                } else {
+                    addErrorMessage('Unexpected response format.');
+                }
+            } catch (error) {
+                document.getElementById('thinking-indicator')?.remove();
+                addErrorMessage(`Error: ${error.message}`);
+            } finally {
+                sendButton.disabled = false;
+                userInput.disabled = false;
+                userInput.focus();
+            }
+        }
+
+        sendButton.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+        
+   </script>
+ </body>
+</html>

@@ -1,0 +1,79 @@
+import json
+from bs4 import BeautifulSoup
+import requests
+from datetime import datetime
+
+def scrape_menu():
+    # Scrape the website
+    source = requests.get('https://cafebiola.cafebonappetit.com/cafe/cafe-biola/').text
+    soup = BeautifulSoup(source, 'lxml')
+
+    data = {
+        'breakfast': [],
+        'lunch': [],
+        'dinner': []
+    }
+
+    # Function to extract menu options for a given station div
+    def extract_options(station_div):
+        options = []
+        for button in station_div.find_all('button', class_='site-panel__daypart-item-title'):
+            option = button.text.strip()
+            options.append(option)
+        return options
+
+    # Extract breakfast options
+    for breakfast in soup.find_all('section', id='breakfast'):
+        for stations in breakfast.find_all('div', class_='station-title-inline-block'):
+            name = stations.h3.text
+            if name == "pizzeria":
+                options = extract_options(stations)
+                data['breakfast'].append({'name': name, 'options': options})
+                # Find sibling menu items
+                for sibling in stations.find_next_siblings('div', class_='site-panel__daypart-item'):
+                    options = extract_options(sibling)
+                    data['breakfast'].append({'name': name, 'options': options})
+            elif name in ["kettle", "home cookin'", "6th st. grill", "chef's table"]:
+                options = extract_options(stations)
+                data['breakfast'].append({'name': name, 'options': options})
+
+    # Extract lunch options
+    for lunch in soup.find_all('section', id='lunch'):
+        for real in lunch.find_all('div', {'data-key-index': '0'}):
+            for stations in real.find_all('div', class_='station-title-inline-block'):
+                name = stations.h3.text
+                if name == "pizzeria":
+                    options = extract_options(stations)
+                    data['lunch'].append({'name': name, 'options': options})
+                    # Find sibling menu items
+                    for sibling in stations.find_next_siblings('div', class_='site-panel__daypart-item'):
+                        options = extract_options(sibling)
+                        data['lunch'].append({'name': name, 'options': options})
+                elif name in ["kettle", "home cookin'", "6th st. grill", "chef's table"]:
+                    options = extract_options(stations)
+                    data['lunch'].append({'name': name, 'options': options})
+
+    # Extract dinner options
+    for dinner in soup.find_all('section', id='dinner'):
+        for real in dinner.find_all('div', {'data-key-index': '0'}):
+            for stations in real.find_all('div', class_='station-title-inline-block'):
+                name = stations.h3.text
+                if name == "pizzeria":
+                    options = extract_options(stations)
+                    data['dinner'].append({'name': name, 'options': options})
+                    # Find sibling menu items
+                    for sibling in stations.find_next_siblings('div', class_='site-panel__daypart-item'):
+                        options = extract_options(sibling)
+                        data['dinner'].append({'name': name, 'options': options})
+                elif name in ["kettle", "home cookin'", "6th st. grill", "chef's table"]:
+                    options = extract_options(stations)
+                    data['dinner'].append({'name': name, 'options': options})
+
+    print(json.dumps(data, indent=4))
+    return data
+
+if __name__ == '__main__':
+    scraped_data = scrape_menu()
+    # You can further process or use the returned data here if needed
+    # For example:
+    # print(scraped_data['breakfast'])
