@@ -31,51 +31,56 @@
             <hr class="my-2" style="border-color: #a9a9a9; border-width: 2px;">
 
             <div class="tab-content mt-3" id="menuTabsContent">
-                <div class="tab-pane fade" id="breakfast" role="tabpanel" aria-labelledby="breakfast-tab">
-                    <h2>Breakfast Menu:</h2>
-                    {% if menu and menu.breakfast %}
-                        {% for item in menu.breakfast %}
-                            <h3>{{ item.name | title }}</h3>
-                            <ul>
-                                {% for option in item.options %}
-                                    <li>{{ option }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% endfor %}
-                    {% else %}
-                        <p>Breakfast menu not available.</p>
-                    {% endif %}
-                </div>
-                <div class="tab-pane fade" id="lunch" role="tabpanel" aria-labelledby="lunch-tab">
-                    <h2>Lunch Menu:</h2>
-                     {% if menu and menu.lunch %}
-                        {% for item in menu.lunch %}
-                            <h3>{{ item.name | title }}</h3>
-                            <ul>
-                                {% for option in item.options %}
-                                    <li>{{ option }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% endfor %}
-                    {% else %}
-                        <p>Lunch menu not available.</p>
-                    {% endif %}
-                </div>
-                <div class="tab-pane fade" id="dinner" role="tabpanel" aria-labelledby="dinner-tab">
-                    <h2>Dinner Menu:</h2>
-                     {% if menu and menu.dinner %}
-                        {% for item in menu.dinner %}
-                            <h3>{{ item.name | title }}</h3>
-                            <ul>
-                                {% for option in item.options %}
-                                    <li>{{ option }}</li>
-                                {% endfor %}
-                                </ul>
-                        {% endfor %}
-                    {% else %}
-                        <p>Dinner menu not available.</p>
-                    {% endif %}
-                </div>
+                <!-- BREAKFAST -->
+<div class="tab-pane fade" id="breakfast" role="tabpanel" aria-labelledby="breakfast-tab">
+    <h2>Breakfast Menu:</h2>
+    {% if menu and menu.breakfast %}
+        {% for item in menu.breakfast %}
+            <h3>{{ item.name | title }}</h3>
+            <ul>
+                {% for option in item.options %}
+                    <li>{{ option | title }}</li>  {# ← added | title #}
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% else %}
+        <p>Breakfast menu not available.</p>
+    {% endif %}
+</div>
+
+<!-- LUNCH -->
+<div class="tab-pane fade" id="lunch" role="tabpanel" aria-labelledby="lunch-tab">
+    <h2>Lunch Menu:</h2>
+    {% if menu and menu.lunch %}
+        {% for item in menu.lunch %}
+            <h3>{{ item.name | title }}</h3>
+            <ul>
+                {% for option in item.options %}
+                    <li>{{ option | title }}</li>  {# ← added | title #}
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% else %}
+        <p>Lunch menu not available.</p>
+    {% endif %}
+</div>
+
+<!-- DINNER -->
+<div class="tab-pane fade" id="dinner" role="tabpanel" aria-labelledby="dinner-tab">
+    <h2>Dinner Menu:</h2>
+    {% if menu and menu.dinner %}
+        {% for item in menu.dinner %}
+            <h3>{{ item.name | title }}</h3>
+            <ul>
+                {% for option in item.options %}
+                    <li>{{ option | title }}</li>  {# ← added | title #}
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% else %}
+        <p>Dinner menu not available.</p>
+    {% endif %}
+</div>
             </div>
 
             <ul class="nav nav-tabs mt-2" id="menuTabs" role="tablist">
