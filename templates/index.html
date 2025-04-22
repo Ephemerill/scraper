@@ -1,389 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Biola Wizard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    </head>
+
+    <!-- Bootstrap + icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <!-- Local CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
+</head>
 
 <body class="bg-dark">
 
-    <i class="bi bi-gear-fill" id="settings-icon" data-bs-toggle="modal" data-bs-target="#settingsModal" title="Settings"></i>
+<!-- settings gear -->
+<i class="bi bi-gear-fill" id="settings-icon"
+   data-bs-toggle="modal" data-bs-target="#settingsModal"
+   title="Settings"></i>
 
-    <div class="container pt-5"> <h1 class="text-center text-light mb-4">Biola Wizard 1.0</h1>
-        <div class="main-content-container">
-            <div class="d-flex justify-content-between align-items-center">
-                <h2 class="text-secondary" id="current-time">Loading time...</h2>
-                <h2 class="text-secondary">
-                    {% if weather and weather['temperature'] and weather['temperature'][0] %}
-                        {{ weather['temperature'][0]['temperature'] }}
-                    {% else %}
-                        --°F
-                    {% endif %}
-                </h2>
-            </div>
-            <hr class="my-2" style="border-color: #a9a9a9; border-width: 2px;">
+<div class="container pt-5">
+  <h1 class="text-center text-light mb-4">Biola Wizard</h1>
 
-            <div class="tab-content mt-3" id="menuTabsContent">
-                <div class="tab-pane fade" id="breakfast" role="tabpanel" aria-labelledby="breakfast-tab">
-                    <h2>Breakfast Menu:</h2>
-                    {% if menu and menu.breakfast %}
-                        {% for item in menu.breakfast %}
-                            <h3>{{ item.name | title }}</h3>
-                            <ul>
-                                {% for option in item.options %}
-                                    <li>{{ option }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% endfor %}
-                    {% else %}
-                        <p>Breakfast menu not available.</p>
-                    {% endif %}
-                </div>
-                <div class="tab-pane fade" id="lunch" role="tabpanel" aria-labelledby="lunch-tab">
-                    <h2>Lunch Menu:</h2>
-                     {% if menu and menu.lunch %}
-                        {% for item in menu.lunch %}
-                            <h3>{{ item.name | title }}</h3>
-                            <ul>
-                                {% for option in item.options %}
-                                    <li>{{ option }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% endfor %}
-                    {% else %}
-                        <p>Lunch menu not available.</p>
-                    {% endif %}
-                </div>
-                <div class="tab-pane fade" id="dinner" role="tabpanel" aria-labelledby="dinner-tab">
-                    <h2>Dinner Menu:</h2>
-                     {% if menu and menu.dinner %}
-                        {% for item in menu.dinner %}
-                            <h3>{{ item.name | title }}</h3>
-                            <ul>
-                                {% for option in item.options %}
-                                    <li>{{ option }}</li>
-                                {% endfor %}
-                                </ul>
-                        {% endfor %}
-                    {% else %}
-                        <p>Dinner menu not available.</p>
-                    {% endif %}
-                </div>
-            </div>
+  <div class="main-content-container">
 
-            <ul class="nav nav-tabs mt-2" id="menuTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="breakfast-tab" data-bs-toggle="tab" data-bs-target="#breakfast" type="button" role="tab" aria-controls="breakfast" aria-selected="false">Breakfast</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="lunch-tab" data-bs-toggle="tab" data-bs-target="#lunch" type="button" role="tab" aria-controls="lunch" aria-selected="false">Lunch</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="dinner-tab" data-bs-toggle="tab" data-bs-target="#dinner" type="button" role="tab" aria-controls="dinner" aria-selected="false">Dinner</button>
-                </li>
-            </ul>
-
-            <hr class="thick-hr">
-
-            <div id="chat-section-wrapper">
-                <div id="chat-toggle-wrapper">
-                    <div id="chat-toggle-button" title="Toggle Chat"></div>
-                    <div id="chat-container">
-                        <div id="chat-input-area">
-                            <input type="text" id="user-input" placeholder="Type your message...">
-                            <button id="send-button">Send</button>
-                        </div>
-                        <div id="chat-messages">
-                            </div>
-                    </div>
-                </div>
-            </div>
-        </div> </div> <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="settingsModalLabel" style="color: #333;">Settings</h5> <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" style="color: #333;"> <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="chatVisibilityToggle">
-                        <label class="form-check-label" for="chatVisibilityToggle">Show AI Chat Window</label>
-                    </div>
-                    </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-            </div>
-        </div>
+    <!-- time + weather -->
+    <div class="d-flex justify-content-between align-items-center">
+      <h2 class="text-secondary" id="current-time">Loading time…</h2>
+      <h2 class="text-secondary">
+        {% if weather and weather["temperature"] and weather["temperature"][0] %}
+            {{ weather["temperature"][0]["temperature"] }}
+        {% else %} --°F {% endif %}
+      </h2>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <hr class="my-2" style="border-color:#a9a9a9;border-width:2px;">
 
-    <script>
-        // --- Time Display Script ---
-        function displayTime() {
-            const now = new Date();
-            let hours = now.getHours();
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const dayOfWeek = daysOfWeek[now.getDay()];
-            const period = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12; // Hour '0' should be '12'
-            const currentTime = `${dayOfWeek}, ${hours}:${minutes} ${period}`;
-            const timeElement = document.getElementById('current-time');
-            if (timeElement) {
-                timeElement.textContent = currentTime;
-            }
-        }
-        // Initial call and interval
-        displayTime();
-        setInterval(displayTime, 60000); // Update every minute
+    <!-- MENU TABS CONTENT -->
+    <div class="tab-content mt-3" id="menuTabsContent">
+      {% for meal_key, meal_name in {"breakfast":"Breakfast","lunch":"Lunch","dinner":"Dinner"}.items() %}
+      <div class="tab-pane fade" id="{{ meal_key }}" role="tabpanel" aria-labelledby="{{ meal_key }}-tab">
+        <h2>{{ meal_name }} Menu:</h2>
+        {% if menu and menu[meal_key] %}
+          {% for station in menu[meal_key] %}
+            <h3>{{ station.name | title }}</h3>
+            <ul class="list-unstyled">
+              {% set sidx = loop.index0 %}
+              {% for option in station.options %}
+                {% set did = "desc-" ~ meal_key ~ "-" ~ sidx ~ "-" ~ loop.index0 %}
+                <li class="mb-1">
+                  {{ option.meal | title }}
+                  {% if option.description %}
+                    <button class="btn btn-link p-0 ms-1 align-baseline toggle-desc"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#{{ did }}"
+                            aria-expanded="false"
+                            aria-controls="{{ did }}">
+                      <i class="bi bi-chevron-down small"></i>
+                    </button>
+                    <div class="collapse" id="{{ did }}">
+                      <small class="text-muted d-block ps-3">{{ option.description }}</small>
+                    </div>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% endfor %}
+        {% else %}
+          <p>{{ meal_name }} menu not available.</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
 
-        // --- Run Scripts after DOM is loaded ---
-        document.addEventListener('DOMContentLoaded', function() {
+    <!-- TAB BAR -->
+    <ul class="nav nav-tabs mt-2" id="menuTabs" role="tablist">
+      {% for meal_key, meal_name in {"breakfast":"Breakfast","lunch":"Lunch","dinner":"Dinner"}.items() %}
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="{{ meal_key }}-tab"
+                data-bs-toggle="tab" data-bs-target="#{{ meal_key }}"
+                type="button" role="tab"
+                aria-controls="{{ meal_key }}" aria-selected="false">
+          {{ meal_name }}
+        </button>
+      </li>
+      {% endfor %}
+    </ul>
 
-            // --- Tab Activation Logic ---
-            const now = new Date();
-            const currentHour = now.getHours();
-            let currentMealPeriod = 'breakfast'; // Default
+    <hr class="thick-hr">
 
-            // Determine meal period based on time (adjust ranges if needed)
-            if (currentHour >= 7 && currentHour < 11) { currentMealPeriod = 'breakfast'; }
-            else if (currentHour >= 11 && currentHour < 16) { currentMealPeriod = 'lunch'; } // Example: Lunch until 4 PM
-            else if (currentHour >= 16 && currentHour < 20) { currentMealPeriod = 'dinner'; } // Example: Dinner 4 PM to 8 PM
-            // Outside these hours, it will default to breakfast or the first available tab
+    <!-- CHAT SECTION -->
+    <div id="chat-section-wrapper">
+      <div id="chat-toggle-wrapper">
+        <div id="chat-toggle-button" title="Toggle Chat"></div>
+        <div id="chat-container">
+          <div id="chat-input-area">
+            <input type="text" id="user-input" placeholder="Type your message…" />
+            <button id="send-button">Send</button>
+          </div>
+          <div id="chat-messages"></div>
+        </div>
+      </div>
+    </div>
 
-            const targetTabButtonId = currentMealPeriod + '-tab';
-            const targetPaneId = currentMealPeriod;
-            const targetTabButton = document.getElementById(targetTabButtonId);
-            const targetPane = document.getElementById(targetPaneId);
-            const allTabButtons = document.querySelectorAll('#menuTabs .nav-link');
-            const allTabPanes = document.querySelectorAll('#menuTabsContent .tab-pane');
+  </div><!-- /main-content-container -->
+</div><!-- /container -->
 
-            // Deactivate all tabs first
-            allTabButtons.forEach(button => {
-                button.classList.remove('active');
-                button.setAttribute('aria-selected', 'false');
-            });
-            allTabPanes.forEach(pane => {
-                pane.classList.remove('show', 'active');
-            });
+<!-- SETTINGS MODAL -->
+<div class="modal fade" id="settingsModal" tabindex="-1"
+     aria-labelledby="settingsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="settingsModalLabel" style="color:#333;">Settings</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="color:#333;">
+        <!-- chat toggle -->
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="chatVisibilityToggle" />
+          <label class="form-check-label" for="chatVisibilityToggle">Show AI Features</label>
+        </div>
+        <!-- personal message toggle -->
+        <div class="form-check form-switch mt-2">
+          <input class="form-check-input" type="checkbox" role="switch" id="personalVisibilityToggle" />
+          <label class="form-check-label" for="personalVisibilityToggle">Personal Message</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-            // Activate the correct tab based on time or fallback to first
-            if (targetTabButton && targetPane) {
-                targetTabButton.classList.add('active');
-                targetTabButton.setAttribute('aria-selected', 'true');
-                targetPane.classList.add('show', 'active');
-            } else {
-                 // Fallback: Activate the first tab if the time-based one isn't found/available
-                 const firstTabButton = document.querySelector('#menuTabs .nav-link');
-                 const firstPaneSelector = firstTabButton?.getAttribute('data-bs-target');
-                 const firstPane = firstPaneSelector ? document.querySelector(firstPaneSelector) : null;
-                 if (firstTabButton && firstPane){
-                     firstTabButton.classList.add('active');
-                     firstTabButton.setAttribute('aria-selected', 'true');
-                     firstPane.classList.add('show', 'active');
-                 }
-            }
+<!-- PERSONAL MESSAGE (visible by default) -->
+<div class="text-center personal-toggle-item">
+  <p class="text-secondary">Thank you for using my website, I really appreciate it. I hope it is able to make your experience a little bit better.</p>
+  <p class="text-secondary">The website will always be free and will never have ads, but the server still costs money so any donations would be really helpful.</p>
+  <p class="text-secondary">That being said, as a broke college student I understand if you are unable to danate so you can hide this message in the settings tab</p>
+  <p class="text-secondary">- Gabriel</p>
+  <a href="https://buymeacoffee.com/ephemeril" target="_blank">
+    <button class="btn btn-outline-secondary" type="button">Support Me</button>
+  </a>
+  <p>&nbsp;</p>
+</div>
 
-            // --- Chat Messaging Logic ---
-            const chatMessages = document.getElementById('chat-messages');
-            const userInput = document.getElementById('user-input');
-            const sendButton = document.getElementById('send-button');
-            // IMPORTANT: Replace with your actual N8N Webhook URL
-            const n8nWebhookUrl = 'https://n8n.biolawizard.com/webhook/ddaed16e-73be-4de6-b3e2-8e246f0765fc'; // <-- REPLACE IF NEEDED
+<!-- FOOTER -->
+<p class="text-center text-secondary disclaimer">Biola Wizard 1.10 By Gabriel Losh</p>
+<p class="text-center text-secondary disclaimer">Menu Data and AI Features May Be Inaccurate</p>
+<p class="text-center text-secondary disclaimer">This Tool Was Built With the Assistance of AI</p>
 
-            // Function to add a message to the chat window
-            function addMessage(text, sender) {
-                 if (!chatMessages) return; // Safety check
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
-                messageDiv.textContent = text; // Use textContent to prevent HTML injection
-                chatMessages.appendChild(messageDiv); // Append to bottom (due to flex-direction: column-reverse)
-                // Scroll to the bottom to show the new message
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* helpers: cookies */
+function setCookie(n,v,d){const t=new Date;t.setTime(t.getTime()+864e5*d),document.cookie=n+"="+v+"; expires="+t.toUTCString()+"; path=/; SameSite=Lax"}
+function getCookie(n){const e=n+"=";return document.cookie.split(";").map(c=>c.trim()).find(c=>0===c.indexOf(e))?.substring(e.length)||null}
 
-            // Function to add an error message
-            function addErrorMessage(text) {
-                 if (!chatMessages) return;
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message', 'error-message');
-                messageDiv.textContent = text;
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
+/* clock */
+function displayTime(){const n=new Date,o=n.getMinutes().toString().padStart(2,"0"),t=(n.getHours()%12)||12,e=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][n.getDay()],r=n.getHours()>=12?"PM":"AM";document.getElementById("current-time").textContent=`${e}, ${t}:${o} ${r}`}
 
-            // Function to send message to backend
-            async function sendMessage() {
-                if (!userInput || !sendButton) return; // Safety check
+/* DOM ready */
+document.addEventListener("DOMContentLoaded",()=>{displayTime(),setInterval(displayTime,6e4);
+ /* auto‑select meal tab */
+(()=>{const n=new Date().getHours(),t=n>=11&&n<16?"lunch":n>=16&&n<20?"dinner":"breakfast",e=document.getElementById(t+"-tab");e&&new bootstrap.Tab(e).show()})();
 
-                const messageText = userInput.value.trim();
-                if (!messageText) return;
+ /* caret rotation */
+document.querySelectorAll(".toggle-desc").forEach(n=>{const t=n.querySelector("i");n.addEventListener("click",()=>{setTimeout(()=>{t.classList.toggle("bi-chevron-down"),t.classList.toggle("bi-chevron-up")},400)})});
 
-                if (!n8nWebhookUrl || n8nWebhookUrl === 'YOUR_N8N_WEBHOOK_URL_HERE' || n8nWebhookUrl.includes('placeholder')) {
-                    addErrorMessage('Error: Chat service URL is not configured.');
-                    console.error("Chat service URL not configured:", n8nWebhookUrl);
-                    return;
-                }
+ /* toggles ------------------------------------------- */
+const chatToggle=document.getElementById("chatVisibilityToggle"),
+      personalToggle=document.getElementById("personalVisibilityToggle"),
+      chatSection=document.getElementById("chat-section-wrapper"),
+      chatArrow=document.getElementById("chat-toggle-button"),
+      chatBox=document.getElementById("chat-container");
 
-                addMessage(messageText, 'user');
-                userInput.value = ''; // Clear input
-                sendButton.disabled = true; // Disable button during request
-                userInput.disabled = true; // Disable input during request
+function applyChat(n){chatSection.classList.toggle("hidden",!n),chatToggle.checked=n,n||(chatArrow.classList.remove("expanded"),chatBox.classList.remove("expanded"))}
+function applyPersonal(n){document.querySelectorAll(".personal-toggle-item").forEach(t=>t.classList.toggle("hidden",!n)),personalToggle.checked=n}
 
-                // Add thinking indicator
-                const thinkingDiv = document.createElement('div');
-                thinkingDiv.classList.add('message', 'bot-message');
-                thinkingDiv.textContent = '...';
-                thinkingDiv.id = 'thinking-indicator';
-                chatMessages.appendChild(thinkingDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+/* initial state: chat off, personal on (unless cookie says no) */
+applyChat(localStorage.getItem("chatVisible")==="true");
+applyPersonal(getCookie("personalMessageVisible")!=="false");
 
+chatToggle.addEventListener("change",e=>{const n=e.target.checked;applyChat(n),localStorage.setItem("chatVisible",n)});
+personalToggle.addEventListener("change",e=>{const n=e.target.checked;applyPersonal(n),setCookie("personalMessageVisible",n,365)});
 
-                try {
-                    const response = await fetch(n8nWebhookUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ message: messageText }) // Ensure payload matches N8N expectation
-                    });
+/* chat arrow */
+chatArrow.addEventListener("click",()=>{if(chatSection.classList.contains("hidden"))return;chatArrow.classList.toggle("expanded"),chatBox.classList.toggle("expanded"),chatBox.classList.contains("expanded")&&document.getElementById("user-input").focus()});
 
-                    document.getElementById('thinking-indicator')?.remove(); // Remove thinking indicator
-
-                    if (!response.ok) {
-                        // Try to get error details from response if possible
-                        let errorDetails = `Server responded with status ${response.status}`;
-                        try {
-                             // Check content type before parsing as JSON
-                             const contentType = response.headers.get("content-type");
-                             if (contentType && contentType.indexOf("application/json") !== -1) {
-                                const errorData = await response.json();
-                                // Adjust based on actual error structure from N8N
-                                errorDetails += `: ${errorData.message || JSON.stringify(errorData) || 'No details provided.'}`;
-                             } else {
-                                 const errorText = await response.text();
-                                 errorDetails += `: ${errorText || 'No details provided.'}`;
-                             }
-                        } catch (e) {
-                            console.error("Error parsing error response:", e);
-                            /* Ignore if response is not JSON or text */
-                        }
-                        throw new Error(errorDetails);
-                    }
-
-                    const data = await response.json();
-                    // IMPORTANT: Adjust 'data.reply' if your N8N workflow returns the response differently
-                    if (data && data.reply) {
-                        addMessage(data.reply, 'bot');
-                    } else {
-                        console.warn("Received response from server, but 'reply' field was missing or empty:", data);
-                        addErrorMessage('Received an empty or unexpected response from the server.');
-                    }
-                } catch (error) {
-                    console.error("Chat send error:", error);
-                    document.getElementById('thinking-indicator')?.remove();
-                    addErrorMessage(`Error: ${error.message || 'Could not connect to chat service.'}`);
-                } finally {
-                    // Re-enable input and button
-                    sendButton.disabled = false;
-                    userInput.disabled = false;
-                    userInput.focus(); // Focus input for next message
-                }
-            }
-
-            // Attach event listeners for sending messages
-            if (sendButton) {
-                sendButton.addEventListener('click', sendMessage);
-            }
-            if (userInput) {
-                userInput.addEventListener('keypress', (event) => {
-                    // Send on Enter, but not if Shift is pressed (allows newline)
-                    if (event.key === 'Enter' && !event.shiftKey) {
-                        event.preventDefault(); // Prevent default Enter behavior (e.g., form submission)
-                        sendMessage();
-                    }
-                });
-            }
-
-            // --- Settings and Chat Visibility Control ---
-            const chatVisibilityToggle = document.getElementById('chatVisibilityToggle');
-            const chatSectionWrapper = document.getElementById('chat-section-wrapper');
-            const chatToggleButton = document.getElementById('chat-toggle-button'); // Arrow
-            const chatContainer = document.getElementById('chat-container'); // Box
-
-            // Function to apply visibility based on the setting
-            const applyChatVisibility = (isVisible) => {
-                // Ensure elements exist before proceeding
-                if (!chatSectionWrapper || !chatVisibilityToggle) {
-                    console.error("Cannot apply chat visibility: Required elements missing.");
-                    return;
-                }
-                // console.log(`Applying visibility: ${isVisible}`); // Debug log
-                if (isVisible) {
-                    chatSectionWrapper.classList.remove('hidden');
-                    chatVisibilityToggle.checked = true;
-                    // Optional: Automatically expand chat when made visible? Decide based on UX preference.
-                    // if (chatToggleButton && chatContainer && !chatContainer.classList.contains('expanded')) {
-                    //      chatToggleButton.classList.add('expanded');
-                    //      chatContainer.classList.add('expanded');
-                    // }
-                } else {
-                    chatSectionWrapper.classList.add('hidden');
-                    chatVisibilityToggle.checked = false;
-                    // Also ensure the inner chat is collapsed when hiding the section
-                    chatToggleButton?.classList.remove('expanded');
-                    chatContainer?.classList.remove('expanded');
-                }
-            };
-
-            // --- Initial Load ---
-            // Check localStorage for the saved preference. Default to 'false' (hidden).
-            const savedVisibility = localStorage.getItem('chatVisible') || 'false';
-            // console.log(`Initial chatVisible from localStorage: ${savedVisibility}`); // Debug log
-            // Apply the state found in localStorage or the default
-            applyChatVisibility(savedVisibility === 'true');
-
-            // --- Event Listener for the Settings Toggle Switch ---
-            if (chatVisibilityToggle) {
-                chatVisibilityToggle.addEventListener('change', function(event) {
-                    // 'event.target.checked' reliably gives the new state of the checkbox
-                    const isVisible = event.target.checked;
-                    // console.log(`Settings toggle changed. New state: ${isVisible}`); // Debug log
-                    applyChatVisibility(isVisible);
-                    // Save the new preference to localStorage
-                    localStorage.setItem('chatVisible', isVisible ? 'true' : 'false');
-                    // console.log(`Saved chatVisible=${isVisible ? 'true' : 'false'} to localStorage.`); // Debug log
-                });
-            } else {
-                console.error("Chat visibility toggle switch not found.");
-            }
-
-            // --- Event Listener for the Arrow Toggle Button ---
-            // This button only expands/collapses the chat box *if* the section is visible
-            if (chatToggleButton && chatContainer && chatSectionWrapper) {
-                 chatToggleButton.addEventListener('click', function() {
-                     // Only allow toggling if the parent section is NOT hidden
-                     if (!chatSectionWrapper.classList.contains('hidden')) {
-                         const isExpanding = !chatContainer.classList.contains('expanded');
-                         chatToggleButton.classList.toggle('expanded', isExpanding);
-                         chatContainer.classList.toggle('expanded', isExpanding);
-                          if (isExpanding) {
-                              userInput?.focus(); // Focus input when expanding
-                          }
-                     } else {
-                          // console.log("Arrow clicked, but chat section is hidden by settings."); // Debug log
-                     }
-                 });
-             } else {
-                 console.error("Chat toggle button or container not found.");
-             }
-
-        }); // End DOMContentLoaded
-    </script>
-
+/* simple message demo */
+const sendBtn=document.getElementById("send-button"),userIn=document.getElementById("user-input"),msgBox=document.getElementById("chat-messages"),webhook="https://n8n.biolawizard.com/webhook/ddaed16e-73be-4de6-b3e2-8e246f0765fc";
+function addMsg(n,t){const e=document.createElement("div");e.className="message "+t,e.textContent=n,msgBox.prepend(e)}
+async function sendMsg(){const n=userIn.value.trim();if(!n)return;addMsg(n,"user-message"),userIn.value="",sendBtn.disabled=!0;try{const t=await fetch(webhook,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:n})}),e=await t.json();addMsg(e.reply??"(no reply)","bot-message")}catch(t){addMsg("Error: "+t,"error-message")}finally{sendBtn.disabled=!1}}
+sendBtn.addEventListener("click",sendMsg),userIn.addEventListener("keypress",n=>{"Enter"===n.key&&sendMsg()});
+});
+</script>
 </body>
 </html>

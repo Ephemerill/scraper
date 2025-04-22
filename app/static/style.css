@@ -1,5 +1,5 @@
-<style>
-    /* --- Base Styles --- */
+  
+  /* --- Base Styles --- */
     body {
         background-color: var(--bs-dark); /* Use Bootstrap's variable for dark background */
         color: var(--bs-light); /* Default text color for dark background */
@@ -215,4 +215,9 @@
     .modal {
         z-index: 1055; /* Default is 1055 for modal, 1060 for backdrop */
     }
-</style>
+
+    /* ---- Disclaimers ---- */
+    .disclaimer {
+        font-size: 0.75rem;   /* adjust as you like: 0.75 rem ≈ 12 px */
+        line-height: 1.2;
+    }
