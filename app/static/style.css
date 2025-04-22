@@ -226,3 +226,86 @@
         vertical-align: middle;
         transition: transform .2s;
       }
+
+    /* Response Box Styling and Animation */
+    .station-response-box {
+    overflow: hidden; /* Necessary for height transition */
+    max-height: 0; /* Start collapsed */
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0; /* Start with no top margin */
+    border: none; /* Start with no border */
+    background-color: #e9ecef; /* Light background for contrast */
+    border-radius: 0.25rem;
+    transition: max-height 0.5s ease-in-out, 
+                padding-top 0.5s ease-in-out, 
+                padding-bottom 0.5s ease-in-out,
+                margin-top 0.5s ease-in-out,
+                border 0.3s linear;
+    color: #333; /* Darker text */
+    }
+
+    .station-response-box.visible {
+    max-height: 500px; /* Allow expansion up to 500px (adjust if needed) */
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin-top: 0.5rem; /* Add space above when visible */
+    border: 1px solid #ced4da; /* Add border when visible */
+    }
+
+    /* Optional: Loading spinner */
+    .station-response-box .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+        border-width: .2em;
+        vertical-align: -0.125em; /* Align better with text */
+    }
+
+    /* Ensure buttons are hidden/shown with chat toggle correctly */
+    .d-none { 
+    display: none !important; /* Ensure Bootstrap's d-none works */
+    } 
+
+    /* Response Box Styling and Animation */
+    .station-response-box {
+        overflow: hidden; 
+        max-height: 0; 
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-left: 0.75rem; /* Added some horizontal padding */
+        padding-right: 0.75rem; /* Added some horizontal padding */
+        margin-top: 0; 
+        border: none; /* Start with no border */
+        background-color: #e9ecef; 
+        border-radius: 0.25rem;
+        transition: max-height 0.5s ease-in-out, 
+                    padding-top 0.5s ease-in-out, 
+                    padding-bottom 0.5s ease-in-out,
+                    margin-top 0.5s ease-in-out,
+                    border 0.3s linear;
+        color: #333; 
+        white-space: pre-wrap; /* <<< THIS HANDLES NEWLINES */
+    }
+    
+    .station-response-box.visible {
+        max-height: 500px; 
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        margin-top: 0.5rem; 
+        border: 1px solid #ced4da; /* <<< THIS ADDS THE OUTLINE/BORDER */
+    }
+    
+    /* Optional: Loading spinner */
+    .station-response-box .spinner-border-sm {
+        /* ... spinner styles ... */
+    }
+    
+    /* Ensure buttons are hidden/shown with chat toggle correctly */
+    .d-none { 
+        display: none !important; 
+    } 
+    
+    /* Ensure buttons are hidden/shown with chat toggle correctly */
+    .d-none { 
+        display: none !important; /* Ensure Bootstrap's d-none works */
+    } 

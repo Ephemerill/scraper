@@ -40,42 +40,58 @@
 
     <hr class="my-2" style="border-color:#a9a9a9;border-width:2px;">
 
-    <!-- MENU TABS CONTENT -->
+
     <div class="tab-content mt-3" id="menuTabsContent">
-      {% for meal_key, meal_name in {"breakfast":"Breakfast","lunch":"Lunch","dinner":"Dinner"}.items() %}
-      <div class="tab-pane fade" id="{{ meal_key }}" role="tabpanel" aria-labelledby="{{ meal_key }}-tab">
-        <h2>{{ meal_name }} Menu:</h2>
-        {% if menu and menu[meal_key] %}
-          {% for station in menu[meal_key] %}
-            <h3>{{ station.name | title }}</h3>
-            <ul class="list-unstyled">
-              {% set sidx = loop.index0 %}
-              {% for option in station.options %}
-                {% set did = "desc-" ~ meal_key ~ "-" ~ sidx ~ "-" ~ loop.index0 %}
-                <li class="mb-1">
-                  {{ option.meal | title }}
-                  {% if option.description %}
-                    <button class="btn btn-link p-0 ms-1 align-baseline toggle-desc"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#{{ did }}"
-                            aria-expanded="false"
-                            aria-controls="{{ did }}">
-                      <i class="bi bi-chevron-down small"></i>
-                    </button>
-                    <div class="collapse" id="{{ did }}">
-                      <small class="text-muted d-block ps-3">{{ option.description }}</small>
-                    </div>
-                  {% endif %}
-                </li>
-              {% endfor %}
-            </ul>
-          {% endfor %}
-        {% else %}
-          <p>{{ meal_name }} menu not available.</p>
-        {% endif %}
+        {% for meal_key, meal_name in {"breakfast":"Breakfast","lunch":"Lunch","dinner":"Dinner"}.items() %}
+        <div class="tab-pane fade" id="{{ meal_key }}" role="tabpanel" aria-labelledby="{{ meal_key }}-tab">
+          <h2>{{ meal_name }} Menu:</h2>
+          {% if menu and menu[meal_key] %}
+            {% for station in menu[meal_key] %}
+              {# --- STATION WRAPPER for easier targeting --- #}
+              <div class="station-block mb-3"> 
+                <div class="d-flex align-items-center mb-1">
+                  <h3 class="mb-0">{{ station.name | title }}</h3>
+                  <button class="btn btn-outline-secondary btn-sm ms-2 station-action-button"
+                          type="button" 
+                          title="Get Info for {{ station.name | title }}"> {# Updated title #}
+                    <i class="bi bi-info-circle"></i> 
+                  </button>
+                </div>
+                
+                <ul class="list-unstyled ms-4 station-meal-list"> {# Added class #}
+                    {% set sidx = loop.index0 %}
+                    {% for option in station.options %}
+                      {% set did = "desc-" ~ meal_key ~ "-" ~ sidx ~ "-" ~ loop.index0 %}
+                      {# --- Added data-meal-desc attribute --- #}
+                      <li class="mb-1" 
+                          data-meal-name="{{ option.meal | title }}" 
+                          data-meal-desc="{{ option.description | default('', true) }}"> 
+                        {{ option.meal | title }}
+                        {% if option.description %}
+                          <button class="btn btn-link p-0 ms-1 align-baseline toggle-desc"
+                                  data-bs-toggle="collapse"
+                                  data-bs-target="#{{ did }}"
+                                  aria-expanded="false"
+                                  aria-controls="{{ did }}">
+                            <i class="bi bi-chevron-down small"></i>
+                          </button>
+                          <div class="collapse" id="{{ did }}">
+                            <small class="text-muted d-block ps-3">{{ option.description }}</small>
+                          </div>
+                        {% endif %}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                  {# --- Placeholder for the dynamic response --- #}
+                  <div class="station-response-box ms-4"></div> 
+              </div> {# --- End STATION WRAPPER --- #}
+            {% endfor %}
+          {% else %}
+            <p>{{ meal_name }} menu not available.</p>
+          {% endif %}
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
-    </div>
 
     <!-- TAB BAR -->
     <ul class="nav nav-tabs mt-2" id="menuTabs" role="tablist">
@@ -155,46 +171,233 @@
 <!-- SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-/* helpers: cookies */
-function setCookie(n,v,d){const t=new Date;t.setTime(t.getTime()+864e5*d),document.cookie=n+"="+v+"; expires="+t.toUTCString()+"; path=/; SameSite=Lax"}
-function getCookie(n){const e=n+"=";return document.cookie.split(";").map(c=>c.trim()).find(c=>0===c.indexOf(e))?.substring(e.length)||null}
+document.addEventListener("DOMContentLoaded", () => {
+  /* helpers: cookies */
+  function setCookie(n, v, d) {
+    const t = new Date();
+    t.setTime(t.getTime() + 864e5 * d);
+    document.cookie = n + "=" + v + "; expires=" + t.toUTCString() + "; path=/; SameSite=Lax";
+  }
 
-/* clock */
-function displayTime(){const n=new Date,o=n.getMinutes().toString().padStart(2,"0"),t=(n.getHours()%12)||12,e=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][n.getDay()],r=n.getHours()>=12?"PM":"AM";document.getElementById("current-time").textContent=`${e}, ${t}:${o} ${r}`}
+  function getCookie(n) {
+    const e = n + "=";
+    return document.cookie.split(";").map(c => c.trim()).find(c => c.indexOf(e) === 0)?.substring(e.length) || null;
+  }
 
-/* DOM ready */
-document.addEventListener("DOMContentLoaded",()=>{displayTime(),setInterval(displayTime,6e4);
- /* auto‑select meal tab */
-(()=>{const n=new Date().getHours(),t=n>=11&&n<16?"lunch":n>=16&&n<20?"dinner":"breakfast",e=document.getElementById(t+"-tab");e&&new bootstrap.Tab(e).show()})();
+  /* clock */
+  function displayTime() {
+    const n = new Date();
+    const o = n.getMinutes().toString().padStart(2, "0");
+    const t = (n.getHours() % 12) || 12;
+    const e = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][n.getDay()];
+    const r = n.getHours() >= 12 ? "PM" : "AM";
+    document.getElementById("current-time").textContent = `${e}, ${t}:${o} ${r}`;
+  }
 
- /* caret rotation */
-document.querySelectorAll(".toggle-desc").forEach(n=>{const t=n.querySelector("i");n.addEventListener("click",()=>{setTimeout(()=>{t.classList.toggle("bi-chevron-down"),t.classList.toggle("bi-chevron-up")},400)})});
+  /* auto-select meal tab */
+  (() => {
+    const n = new Date().getHours();
+    const t = n >= 11 && n < 16 ? "lunch" : n >= 16 && n < 20 ? "dinner" : "breakfast";
+    const e = document.getElementById(t + "-tab");
+    if (e) new bootstrap.Tab(e).show();
+  })();
 
- /* toggles ------------------------------------------- */
-const chatToggle=document.getElementById("chatVisibilityToggle"),
-      personalToggle=document.getElementById("personalVisibilityToggle"),
-      chatSection=document.getElementById("chat-section-wrapper"),
-      chatArrow=document.getElementById("chat-toggle-button"),
-      chatBox=document.getElementById("chat-container");
+  /* caret rotation */
+  document.querySelectorAll(".toggle-desc").forEach(n => {
+    const t = n.querySelector("i");
+    n.addEventListener("click", () => {
+      setTimeout(() => {
+        t.classList.toggle("bi-chevron-down");
+        t.classList.toggle("bi-chevron-up");
+      }, 400);
+    });
+  });
 
-function applyChat(n){chatSection.classList.toggle("hidden",!n),chatToggle.checked=n,n||(chatArrow.classList.remove("expanded"),chatBox.classList.remove("expanded"))}
-function applyPersonal(n){document.querySelectorAll(".personal-toggle-item").forEach(t=>t.classList.toggle("hidden",!n)),personalToggle.checked=n}
+  /* toggles */
+  const chatToggle = document.getElementById("chatVisibilityToggle"),
+        personalToggle = document.getElementById("personalVisibilityToggle"),
+        chatSection = document.getElementById("chat-section-wrapper"),
+        chatArrow = document.getElementById("chat-toggle-button"),
+        chatBox = document.getElementById("chat-container");
 
-/* initial state: chat off, personal on (unless cookie says no) */
-applyChat(localStorage.getItem("chatVisible")==="true");
-applyPersonal(getCookie("personalMessageVisible")!=="false");
+  function applyChat(n) {
+    chatSection.classList.toggle("d-none", !n);
+    chatToggle.checked = n;
+    if (!n) {
+      chatArrow.classList.remove("expanded");
+      chatBox.classList.remove("expanded");
+    }
+    document.querySelectorAll(".station-action-button").forEach(button => {
+      button.classList.toggle("d-none", !n);
+    });
+  }
 
-chatToggle.addEventListener("change",e=>{const n=e.target.checked;applyChat(n),localStorage.setItem("chatVisible",n)});
-personalToggle.addEventListener("change",e=>{const n=e.target.checked;applyPersonal(n),setCookie("personalMessageVisible",n,365)});
+  function applyPersonal(n) {
+    document.querySelectorAll(".personal-toggle-item").forEach(t =>
+      t.classList.toggle("d-none", !n) // ← Use d-none for Bootstrap
+    );
+    personalToggle.checked = n;
+  }
 
-/* chat arrow */
-chatArrow.addEventListener("click",()=>{if(chatSection.classList.contains("hidden"))return;chatArrow.classList.toggle("expanded"),chatBox.classList.toggle("expanded"),chatBox.classList.contains("expanded")&&document.getElementById("user-input").focus()});
+  /* initial state */
+  applyChat(localStorage.getItem("chatVisible") === "true");
+  applyPersonal(getCookie("personalMessageVisible") !== "false");
 
-/* simple message demo */
-const sendBtn=document.getElementById("send-button"),userIn=document.getElementById("user-input"),msgBox=document.getElementById("chat-messages"),webhook="https://n8n.biolawizard.com/webhook/ddaed16e-73be-4de6-b3e2-8e246f0765fc";
-function addMsg(n,t){const e=document.createElement("div");e.className="message "+t,e.textContent=n,msgBox.prepend(e)}
-async function sendMsg(){const n=userIn.value.trim();if(!n)return;addMsg(n,"user-message"),userIn.value="",sendBtn.disabled=!0;try{const t=await fetch(webhook,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:n})}),e=await t.json();addMsg(e.reply??"(no reply)","bot-message")}catch(t){addMsg("Error: "+t,"error-message")}finally{sendBtn.disabled=!1}}
-sendBtn.addEventListener("click",sendMsg),userIn.addEventListener("keypress",n=>{"Enter"===n.key&&sendMsg()});
+  chatToggle.addEventListener("change", e => {
+    const n = e.target.checked;
+    applyChat(n);
+    localStorage.setItem("chatVisible", n);
+  });
+
+  personalToggle.addEventListener("change", e => {
+    const n = e.target.checked;
+    applyPersonal(n);
+    setCookie("personalMessageVisible", n, 365);
+  });
+
+  /* chat arrow */
+  chatArrow.addEventListener("click", () => {
+    if (chatSection.classList.contains("d-none")) return;
+    chatArrow.classList.toggle("expanded");
+    chatBox.classList.toggle("expanded");
+    if (chatBox.classList.contains("expanded")) {
+      document.getElementById("user-input").focus();
+    }
+  });
+
+  /* chat send */
+  const sendBtn = document.getElementById("send-button"),
+        userIn = document.getElementById("user-input"),
+        msgBox = document.getElementById("chat-messages"),
+        webhook = "https://n8n.biolawizard.com/webhook/ddaed16e-73be-4de6-b3e2-8e246f0765fc";
+
+  function addMsg(n, t) {
+    const e = document.createElement("div");
+    e.className = "message " + t;
+    e.textContent = n;
+    msgBox.prepend(e);
+  }
+
+  async function sendMsg() {
+    const n = userIn.value.trim();
+    if (!n) return;
+    addMsg(n, "user-message");
+    userIn.value = "";
+    sendBtn.disabled = true;
+    try {
+      const t = await fetch(webhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: n })
+      });
+      const e = await t.json();
+      addMsg((e?.reply) ?? "(no reply)", "bot-message");
+    } catch (t) {
+      addMsg("Error: " + t, "error-message");
+    } finally {
+      sendBtn.disabled = false;
+    }
+  }
+
+  sendBtn.addEventListener("click", sendMsg);
+  userIn.addEventListener("keypress", n => {
+    if (n.key === "Enter") sendMsg();
+  });
+
+  let activeResponseBox = null;   // currently‑open box
+  let closeListener    = null;    // outside‑click listener
+
+  function closeAllResponseBoxes() {
+    // 1. collapse any open box
+    if (activeResponseBox) {
+      activeResponseBox.classList.remove("visible");
+      activeResponseBox.innerHTML = "";          // clear previous reply / spinner
+      activeResponseBox = null;
+    }
+
+    // 2. re‑enable all station buttons
+    document.querySelectorAll(".station-action-button")
+            .forEach(btn => (btn.disabled = false));
+
+    // 3. remove the global click listener
+    if (closeListener) {
+      document.removeEventListener("click", closeListener);
+      closeListener = null;
+    }
+  }
+
+  /* -------------------------------------------------
+     Main click handler for every “info” button
+  --------------------------------------------------*/
+  const stationWebhookUrl =
+    "https://n8n.biolawizard.com/webhook-test/3666ea52-5393-408a-a9ef-f7c78f9c5eb4";
+
+  document.querySelectorAll(".station-action-button").forEach(button => {
+    button.addEventListener("click", async event => {
+      const currentButton = event.currentTarget;
+      const stationBlock  = currentButton.closest(".station-block");
+      const mealList      = stationBlock?.querySelector(".station-meal-list");
+      const responseBox   = stationBlock?.querySelector(".station-response-box");
+      if (!mealList || !responseBox) return;
+
+      /* --- toggle behaviour --- */
+      if (responseBox === activeResponseBox) {
+        closeAllResponseBoxes();
+        return;
+      }
+      closeAllResponseBoxes();        // close anything that was open first
+
+      /* --- build payload & show spinner --- */
+      activeResponseBox = responseBox;
+      const mealsPayload = [...mealList.querySelectorAll("li[data-meal-name]")].map(li => ({
+        title:       li.dataset.mealName,
+        description: li.dataset.mealDesc
+      }));
+
+      responseBox.innerHTML =
+        `<div class="d-flex align-items-center p-2">
+           <span class="spinner-border spinner-border-sm me-2"></span> Loading…
+         </div>`;
+      responseBox.classList.add("visible");
+      currentButton.disabled = true;
+
+      /* --- call n8n webhook --- */
+      try {
+        const rsp  = await fetch(stationWebhookUrl, {
+          method : "POST",
+          headers: { "Content-Type": "application/json" },
+          body   : JSON.stringify({ station_meals: mealsPayload })
+        });
+        if (!rsp.ok) throw new Error(`status ${rsp.status}`);
+        const data = await rsp.json();
+
+        responseBox.innerHTML =
+          `<div class="p-2">${data.reply || "No response content received."}</div>`;
+      } catch (err) {
+        console.error(err);
+        responseBox.innerHTML =
+          `<div class="p-2 text-danger">Error loading data. Please try again.</div>`;
+      } finally {
+        currentButton.disabled = false;
+
+        /* --- register one global outside‑click listener --- */
+        closeListener = evt => {
+          const clickedOutside =
+            activeResponseBox &&
+            !activeResponseBox.contains(evt.target) &&
+            !currentButton.contains(evt.target);
+
+          if (clickedOutside) closeAllResponseBoxes();
+        };
+        // Use capture phase so we fire before Bootstrap’s own handlers
+        document.addEventListener("click", closeListener, { capture: true });
+      }
+    });
+  });
+
+
+  displayTime();
+  setInterval(displayTime, 60000); // update every minute
 });
 </script>
 </body>
