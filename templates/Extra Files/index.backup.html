@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biola Wizard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+      type="image/x-icon">
+    </head>
+
+<body class="bg-dark">
+
+    <i class="bi bi-gear-fill" id="settings-icon" data-bs-toggle="modal" data-bs-target="#settingsModal" title="Settings"></i>
+
+    <div class="container pt-5"> <h1 class="text-center text-light mb-4">Biola Wizard</h1>
+        <div class="main-content-container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="text-secondary" id="current-time">Loading time...</h2>
+                <h2 class="text-secondary">
+                    {% if weather and weather['temperature'] and weather['temperature'][0] %}
+                        {{ weather['temperature'][0]['temperature'] }}
+                    {% else %}
+                        --°F
+                    {% endif %}
+                </h2>
+            </div>
+            <hr class="my-2" style="border-color: #a9a9a9; border-width: 2px;">
+
+            <div class="tab-content mt-3" id="menuTabsContent">
+                <div class="tab-pane fade" id="breakfast" role="tabpanel" aria-labelledby="breakfast-tab">
+                    <h2>Breakfast Menu:</h2>
+                    {% if menu and menu.breakfast %}
+                        {% for item in menu.breakfast %}
+                            <h3>{{ item.name | title }}</h3>
+                            <ul>
+                                {% for option in item.options %}
+                                    <li>{{ option }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endfor %}
+                    {% else %}
+                        <p>Breakfast menu not available.</p>
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade" id="lunch" role="tabpanel" aria-labelledby="lunch-tab">
+                    <h2>Lunch Menu:</h2>
+                     {% if menu and menu.lunch %}
+                        {% for item in menu.lunch %}
+                            <h3>{{ item.name | title }}</h3>
+                            <ul>
+                                {% for option in item.options %}
+                                    <li>{{ option }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endfor %}
+                    {% else %}
+                        <p>Lunch menu not available.</p>
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade" id="dinner" role="tabpanel" aria-labelledby="dinner-tab">
+                    <h2>Dinner Menu:</h2>
+                     {% if menu and menu.dinner %}
+                        {% for item in menu.dinner %}
+                            <h3>{{ item.name | title }}</h3>
+                            <ul>
+                                {% for option in item.options %}
+                                    <li>{{ option }}</li>
+                                {% endfor %}
+                                </ul>
+                        {% endfor %}
+                    {% else %}
+                        <p>Dinner menu not available.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <ul class="nav nav-tabs mt-2" id="menuTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="breakfast-tab" data-bs-toggle="tab" data-bs-target="#breakfast" type="button" role="tab" aria-controls="breakfast" aria-selected="false">Breakfast</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="lunch-tab" data-bs-toggle="tab" data-bs-target="#lunch" type="button" role="tab" aria-controls="lunch" aria-selected="false">Lunch</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="dinner-tab" data-bs-toggle="tab" data-bs-target="#dinner" type="button" role="tab" aria-controls="dinner" aria-selected="false">Dinner</button>
+                </li>
+            </ul>
+
+            <hr class="thick-hr">
+
+            <div id="chat-section-wrapper">
+                <div id="chat-toggle-wrapper">
+                    <div id="chat-toggle-button" title="Toggle Chat"></div>
+                    <div id="chat-container">
+                        <div id="chat-input-area">
+                            <input type="text" id="user-input" placeholder="Type your message...">
+                            <button id="send-button">Send</button>
+                        </div>
+                        <div id="chat-messages">
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div> </div> <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="settingsModalLabel" style="color: #333;">Settings</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="color: #333;">
+                        <!-- Existing AI Chat Toggle -->
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="chatVisibilityToggle">
+                            <label class="form-check-label" for="chatVisibilityToggle">Show AI Features</label> <!-- Optional: Renamed label for clarity -->
+                        </div>
+    
+                        <!-- **** NEW Personal Section Toggle **** -->
+                        <div class="form-check form-switch mt-2"> <!-- Added margin-top for spacing -->
+                            <input class="form-check-input" type="checkbox" role="switch" id="personalVisibilityToggle">
+                            <label class="form-check-label" for="personalVisibilityToggle">Personal Message</label>
+                        </div>
+                        <!-- **** END NEW Toggle **** -->
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <div class="text-center personal-toggle-item">
+        <p class="text-center text-secondary"> Thank you for using my website, I really appreciate it. I hope it is able to make your experience a little bit better.</p>
+        <p class="text-center text-secondary"> The website will always be free and will never have ads, but the server still costs money so any donations would be really helpful. </p>
+        <p class="text-center text-secondary"> That being said, as a broke college student I understand if you are unable to danate so you can hide this message in the settings tab </p>
+        <p class="text-center text-secondary"> - Gabriel</p>
+        <a href="https://buymeacoffee.com/ephemeril" target="_blank">
+          <button type="button" class="btn btn-outline-secondary">
+            Support Me
+          </button>
+        </a>
+        <p> ​ </p>
+      </div>
+
+    <p class="text-center text-secondary disclaimer"> Biola Wizard 1.01 By Gabriel Losh</p>
+    <p class="text-center text-secondary disclaimer"> Menu Data and AI Features May Be Inaccurate</p>
+    <p class="text-center text-secondary disclaimer"> This Tool Was Built With the Assistance of AI</p>
+
+
+    <!-- Keep the Bootstrap JS include -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // --- Cookie Helper Functions ---
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            // Added SameSite=Lax for security best practice
+            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // --- Time Display Script ---
+        function displayTime() {
+             const now = new Date();
+             let hours = now.getHours();
+             const minutes = now.getMinutes().toString().padStart(2, '0');
+             const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+             const dayOfWeek = daysOfWeek[now.getDay()];
+             const period = hours >= 12 ? 'PM' : 'AM';
+             hours = hours % 12;
+             hours = hours ? hours : 12; // Hour '0' should be '12'
+             const currentTime = `${dayOfWeek}, ${hours}:${minutes} ${period}`;
+             const timeElement = document.getElementById('current-time');
+             if (timeElement) {
+                 timeElement.textContent = currentTime;
+             }
+        }
+        // Initial call and interval
+        displayTime();
+        setInterval(displayTime, 60000); // Update every minute
+
+        // --- Run Scripts after DOM is loaded ---
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // --- Tab Activation Logic ---
+            const now = new Date();
+            const currentHour = now.getHours();
+            let currentMealPeriod = 'breakfast'; // Default
+
+            if (currentHour >= 7 && currentHour < 11) { currentMealPeriod = 'breakfast'; }
+            else if (currentHour >= 11 && currentHour < 16) { currentMealPeriod = 'lunch'; }
+            else if (currentHour >= 16 && currentHour < 20) { currentMealPeriod = 'dinner'; } // Assuming dinner ends around 8 PM
+
+            const targetTabButtonId = currentMealPeriod + '-tab';
+            const targetPaneId = currentMealPeriod;
+            const targetTabButton = document.getElementById(targetTabButtonId);
+            const targetPane = document.getElementById(targetPaneId);
+            const allTabButtons = document.querySelectorAll('#menuTabs .nav-link');
+            const allTabPanes = document.querySelectorAll('#menuTabsContent .tab-pane');
+
+            allTabButtons.forEach(button => {
+                button.classList.remove('active');
+                button.setAttribute('aria-selected', 'false');
+            });
+            allTabPanes.forEach(pane => {
+                pane.classList.remove('show', 'active');
+            });
+
+            if (targetTabButton && targetPane) {
+                targetTabButton.classList.add('active');
+                targetTabButton.setAttribute('aria-selected', 'true');
+                targetPane.classList.add('show', 'active');
+            } else {
+                 // Fallback to the first tab if the current time doesn't match any meal period
+                 const firstTabButton = document.querySelector('#menuTabs .nav-link');
+                 const firstPaneSelector = firstTabButton?.getAttribute('data-bs-target');
+                 const firstPane = firstPaneSelector ? document.querySelector(firstPaneSelector) : null;
+                 if (firstTabButton && firstPane){
+                     firstTabButton.classList.add('active');
+                     firstTabButton.setAttribute('aria-selected', 'true');
+                     firstPane.classList.add('show', 'active');
+                 }
+            }
+
+            // --- Chat Messaging Logic ---
+            const chatMessages = document.getElementById('chat-messages');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            const n8nWebhookUrl = 'https://n8n.biolawizard.com/webhook/ddaed16e-73be-4de6-b3e2-8e246f0765fc'; // <-- REPLACE IF NEEDED
+
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+                messageDiv.textContent = text;
+                // Insert new message at the top since the container is flex-direction: column-reverse
+                chatMessages.insertBefore(messageDiv, chatMessages.firstChild);
+                // Scroll to the bottom (which is visually the top due to reversal)
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function addErrorMessage(text) {
+                const errorDiv = document.createElement('div');
+                errorDiv.classList.add('message', 'error-message');
+                errorDiv.textContent = "Error: " + text;
+                chatMessages.insertBefore(errorDiv, chatMessages.firstChild);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            async function sendMessage() {
+                const messageText = userInput.value.trim();
+                if (!messageText) return; // Don't send empty messages
+
+                addMessage(messageText, 'user');
+                userInput.value = ''; // Clear input field
+                sendButton.disabled = true; // Disable send button while waiting
+
+                try {
+                    const response = await fetch(n8nWebhookUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: messageText }),
+                    });
+
+                    if (!response.ok) {
+                        // Handle HTTP errors (e.g., 404, 500)
+                        throw new Error(`Network response was not ok, status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    // Assuming the n8n workflow returns a JSON with a 'reply' field
+                    if (data && data.reply) {
+                         addMessage(data.reply, 'bot');
+                     } else {
+                         // Handle cases where the response is ok but doesn't have the expected data
+                         console.warn("Received response, but 'reply' field is missing:", data);
+                         addErrorMessage("Received an unexpected response from the server.");
+                     }
+
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    // Provide user feedback about the error
+                    addErrorMessage(error.message || "Could not reach the server. Please try again later.");
+                } finally {
+                    sendButton.disabled = false; // Re-enable send button
+                    userInput.focus(); // Focus back on input
+                }
+            }
+
+            if (sendButton) sendButton.addEventListener('click', sendMessage);
+            if (userInput) userInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+
+            // --- Settings and Visibility Control ---
+            const chatVisibilityToggle = document.getElementById('chatVisibilityToggle');
+            const personalVisibilityToggle = document.getElementById('personalVisibilityToggle'); // Get the new toggle
+            const chatToggleButton = document.getElementById('chat-toggle-button'); // Arrow
+            const chatContainer = document.getElementById('chat-container'); // Box
+            const chatSectionWrapper = document.getElementById('chat-section-wrapper');
+
+
+            // Function to apply AI Chat visibility based on the setting
+            const applyChatVisibility = (isVisible) => {
+                 if (!chatVisibilityToggle) {
+                     console.error("Cannot apply AI visibility: Toggle switch element missing.");
+                     return;
+                 }
+
+                 // Control the main Chat Section Wrapper
+                 if (chatSectionWrapper) {
+                     if (isVisible) {
+                         chatSectionWrapper.classList.remove('hidden');
+                     } else {
+                         chatSectionWrapper.classList.add('hidden');
+                         // Also collapse the chat if hiding the whole section
+                         chatToggleButton?.classList.remove('expanded');
+                         chatContainer?.classList.remove('expanded');
+                     }
+                 }
+
+                 // You could potentially add a class like 'ai-dependent' to other elements
+                 // and toggle them here too if needed in the future.
+                 // const otherToggleableElements = document.querySelectorAll('.ai-dependent');
+                 // otherToggleableElements.forEach(element => { /* ... */ });
+
+                 // Update the toggle switch state
+                 chatVisibilityToggle.checked = isVisible;
+            };
+
+            /* ---- Personal section visibility ---- */
+            const applyPersonalVisibility = (isVisible) => {
+                document.querySelectorAll('.personal-toggle-item').forEach(el => {
+                if (isVisible) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+                });
+    // keep the switch in sync in case we call this manually
+    if (personalVisibilityToggle) personalVisibilityToggle.checked = isVisible;
+  };
+
+            // --- Initial Load Logic ---
+
+            // AI Chat Visibility (using localStorage as before)
+            const savedChatVisibility = localStorage.getItem('chatVisible') || 'false'; // Default false if not set
+            applyChatVisibility(savedChatVisibility === 'true');
+
+            /* **** NEW: Personal Toggle Visibility (using Cookies) **** */
+            if (personalVisibilityToggle) {
+                const savedPersonalPref = getCookie('personalMessageVisible');
+                // default to TRUE unless the cookie explicitly says "false"
+                const isPersonalEnabled = savedPersonalPref !== 'false';
+                applyPersonalVisibility(isPersonalEnabled);          // <‑‑ call helper
+            } else {
+                console.error("Personal visibility toggle switch not found.");
+            }
+
+            // --- Event Listeners for Settings Toggles ---
+
+            // AI Chat Toggle Listener (uses localStorage)
+            if (chatVisibilityToggle) {
+                chatVisibilityToggle.addEventListener('change', function(event) {
+                    const isVisible = event.target.checked;
+                    applyChatVisibility(isVisible);
+                    localStorage.setItem('chatVisible', isVisible ? 'true' : 'false');
+                });
+            } else {
+                console.error("AI visibility toggle switch not found for listener.");
+            }
+
+            /* **** Personal Toggle Listener (uses Cookies) **** */
+            if (personalVisibilityToggle) {
+                personalVisibilityToggle.addEventListener('change', (event) => {
+                const isChecked = event.target.checked;
+                applyPersonalVisibility(isChecked);                       // <‑‑ call helper
+                setCookie('personalMessageVisible',
+                isChecked ? 'true' : 'false',
+                365); // remember for 1 year
+            });
+            }
+
+
+            // --- Event Listener for the Chat Arrow Toggle Button ---
+            if (chatToggleButton && chatContainer && chatSectionWrapper) {
+                 chatToggleButton.addEventListener('click', function() {
+                     // Only allow toggle if the whole chat section isn't hidden by settings
+                     if (!chatSectionWrapper.classList.contains('hidden')) {
+                         const isExpanding = !chatContainer.classList.contains('expanded');
+                         chatToggleButton.classList.toggle('expanded', isExpanding);
+                         chatContainer.classList.toggle('expanded', isExpanding);
+                          if (isExpanding) {
+                              userInput?.focus(); // Focus input when expanding
+                          }
+                     }
+                 });
+             } else {
+                 console.error("Chat toggle button, container, or section wrapper not found.");
+             }
+
+        }); // End DOMContentLoaded
+    </script>
+
+</body>
+</html>
