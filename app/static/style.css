@@ -221,3 +221,8 @@
         font-size: 0.75rem;   /* adjust as you like: 0.75 rem ≈ 12 px */
         line-height: 1.2;
     }
+
+    .toggle-desc i {
+        vertical-align: middle;
+        transition: transform .2s;
+      }
