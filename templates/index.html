@@ -13,7 +13,7 @@
 
     <i class="bi bi-gear-fill" id="settings-icon" data-bs-toggle="modal" data-bs-target="#settingsModal" title="Settings"></i>
 
-    <div class="container pt-5"> <h1 class="text-center text-light mb-4">Biola Wizard 1.0</h1>
+    <div class="container pt-5"> <h1 class="text-center text-light mb-4">Biola Wizard</h1>
         <div class="main-content-container">
             <div class="d-flex justify-content-between align-items-center">
                 <h2 class="text-secondary" id="current-time">Loading time...</h2>
@@ -126,8 +126,25 @@
                 </div>
             </div>
     </div>
-    <p class="text-center text-secondary"> Menu Data and AI Features May Be Inaccurate</p>
-    <p class="text-center text-secondary"> Biola Wizard Was Built With the Assistance of AI</p>
+
+    <div class="text-center personal-toggle-item">
+        <p class="text-center text-secondary"> Thank you for using my website, I really appreciate it. I hope it is able to make your experience a little bit better.</p>
+        <p class="text-center text-secondary"> The website will always be free and will never have ads, but the server still costs money so any donations would be really helpful. </p>
+        <p class="text-center text-secondary"> That being said, as a broke college student I understand if you are unable to danate so you can hide this message in the settings tab </p>
+        <p class="text-center text-secondary"> - Gabriel</p>
+        <a href="https://buymeacoffee.com/ephemeril" target="_blank">
+          <button type="button" class="btn btn-outline-secondary">
+            Support Me
+          </button>
+        </a>
+        <p> ​ </p>
+      </div>
+
+    <p class="text-center text-secondary disclaimer"> Biola Wizard 1.01 By Gabriel Losh</p>
+    <p class="text-center text-secondary disclaimer"> Menu Data and AI Features May Be Inaccurate</p>
+    <p class="text-center text-secondary disclaimer"> This Tool Was Built With the Assistance of AI</p>
+
+
     <!-- Keep the Bootstrap JS include -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -329,22 +346,33 @@
                  chatVisibilityToggle.checked = isVisible;
             };
 
+            /* ---- Personal section visibility ---- */
+            const applyPersonalVisibility = (isVisible) => {
+                document.querySelectorAll('.personal-toggle-item').forEach(el => {
+                if (isVisible) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+                });
+    // keep the switch in sync in case we call this manually
+    if (personalVisibilityToggle) personalVisibilityToggle.checked = isVisible;
+  };
+
             // --- Initial Load Logic ---
 
             // AI Chat Visibility (using localStorage as before)
             const savedChatVisibility = localStorage.getItem('chatVisible') || 'false'; // Default false if not set
             applyChatVisibility(savedChatVisibility === 'true');
 
-            // **** NEW: Personal Toggle Visibility (using Cookies) ****
+            /* **** NEW: Personal Toggle Visibility (using Cookies) **** */
             if (personalVisibilityToggle) {
                 const savedPersonalPref = getCookie('personalMessageVisible');
-                // Default to TRUE if cookie doesn't exist or isn't explicitly 'false'
-                let isPersonalEnabled = savedPersonalPref !== 'false';
-                personalVisibilityToggle.checked = isPersonalEnabled;
-                // Note: This currently only sets the toggle state.
-                // Add logic here if this toggle needs to hide/show elements immediately.
+                // default to TRUE unless the cookie explicitly says "false"
+                const isPersonalEnabled = savedPersonalPref !== 'false';
+                applyPersonalVisibility(isPersonalEnabled);          // <‑‑ call helper
             } else {
-                 console.error("Personal visibility toggle switch not found.");
+                console.error("Personal visibility toggle switch not found.");
             }
 
             // --- Event Listeners for Settings Toggles ---
@@ -360,15 +388,16 @@
                 console.error("AI visibility toggle switch not found for listener.");
             }
 
-            // **** NEW: Personal Toggle Listener (uses Cookies) ****
+            /* **** Personal Toggle Listener (uses Cookies) **** */
             if (personalVisibilityToggle) {
-                 personalVisibilityToggle.addEventListener('change', function(event) {
-                     const isChecked = event.target.checked;
-                     setCookie('personalMessageVisible', isChecked ? 'true' : 'false', 365); // Save preference for 1 year
-                     // Add logic here if the change should immediately affect the UI
-                     // console.log("Personal toggle set to:", isChecked);
-                 });
-            } // Error already logged if not found during initial load
+                personalVisibilityToggle.addEventListener('change', (event) => {
+                const isChecked = event.target.checked;
+                applyPersonalVisibility(isChecked);                       // <‑‑ call helper
+                setCookie('personalMessageVisible',
+                isChecked ? 'true' : 'false',
+                365); // remember for 1 year
+            });
+            }
 
 
             // --- Event Listener for the Chat Arrow Toggle Button ---
