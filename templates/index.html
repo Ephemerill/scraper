@@ -146,6 +146,11 @@
           <input class="form-check-input" type="checkbox" role="switch" id="personalVisibilityToggle" />
           <label class="form-check-label" for="personalVisibilityToggle">Personal Message</label>
         </div>
+        <!--  add just this chunk  -->
+        <div class="form-check form-switch mt-2">
+            <input class="form-check-input" type="checkbox" role="switch" id="sarcasticToggle" />
+            <label class="form-check-label" for="sarcasticToggle"> Sarcastic AI</label>
+        </div>
       </div>
     </div>
   </div>
@@ -168,94 +173,110 @@
 <p class="text-center text-secondary disclaimer">Menu Data and AI Features May Be Inaccurate</p>
 <p class="text-center text-secondary disclaimer">This Tool Was Built With the Assistance of AI</p>
 
+
+
+
 <!-- SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  /* helpers: cookies */
+  /* -------- helpers -------- */
   function setCookie(n, v, d) {
     const t = new Date();
     t.setTime(t.getTime() + 864e5 * d);
-    document.cookie = n + "=" + v + "; expires=" + t.toUTCString() + "; path=/; SameSite=Lax";
+    document.cookie =
+      n + "=" + v + "; expires=" + t.toUTCString() + "; path=/; SameSite=Lax";
   }
-
   function getCookie(n) {
     const e = n + "=";
-    return document.cookie.split(";").map(c => c.trim()).find(c => c.indexOf(e) === 0)?.substring(e.length) || null;
+    return (
+      document.cookie
+        .split(";")
+        .map(c => c.trim())
+        .find(c => c.indexOf(e) === 0)
+        ?.substring(e.length) || null
+    );
   }
 
-  /* clock */
+  /* -------- clock -------- */
   function displayTime() {
     const n = new Date();
-    const o = n.getMinutes().toString().padStart(2, "0");
-    const t = (n.getHours() % 12) || 12;
-    const e = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][n.getDay()];
-    const r = n.getHours() >= 12 ? "PM" : "AM";
-    document.getElementById("current-time").textContent = `${e}, ${t}:${o} ${r}`;
+    const m = n.getMinutes().toString().padStart(2, "0");
+    const h = (n.getHours() % 12) || 12;
+    const day = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][n.getDay()];
+    const ampm = n.getHours() >= 12 ? "PM" : "AM";
+    document.getElementById("current-time").textContent = `${day}, ${h}:${m} ${ampm}`;
   }
 
-  /* auto-select meal tab */
+  /* -------- auto‑select meal tab -------- */
   (() => {
-    const n = new Date().getHours();
-    const t = n >= 11 && n < 16 ? "lunch" : n >= 16 && n < 20 ? "dinner" : "breakfast";
-    const e = document.getElementById(t + "-tab");
-    if (e) new bootstrap.Tab(e).show();
+    const hr = new Date().getHours();
+    const key = hr >= 11 && hr < 16 ? "lunch" :
+                hr >= 16 && hr < 20 ? "dinner" : "breakfast";
+    const tab = document.getElementById(key + "-tab");
+    if (tab) new bootstrap.Tab(tab).show();
   })();
 
-  /* caret rotation */
-  document.querySelectorAll(".toggle-desc").forEach(n => {
-    const t = n.querySelector("i");
-    n.addEventListener("click", () => {
+  /* -------- caret rotation -------- */
+  document.querySelectorAll(".toggle-desc").forEach(btn => {
+    const icon = btn.querySelector("i");
+    btn.addEventListener("click", () => {
       setTimeout(() => {
-        t.classList.toggle("bi-chevron-down");
-        t.classList.toggle("bi-chevron-up");
+        icon.classList.toggle("bi-chevron-down");
+        icon.classList.toggle("bi-chevron-up");
       }, 400);
     });
   });
 
-  /* toggles */
-  const chatToggle = document.getElementById("chatVisibilityToggle"),
-        personalToggle = document.getElementById("personalVisibilityToggle"),
-        chatSection = document.getElementById("chat-section-wrapper"),
-        chatArrow = document.getElementById("chat-toggle-button"),
-        chatBox = document.getElementById("chat-container");
+  /* -------- settings toggles -------- */
+  const chatToggle      = document.getElementById("chatVisibilityToggle"),
+        personalToggle  = document.getElementById("personalVisibilityToggle"),
+        sarcasticToggle = document.getElementById("sarcasticToggle"),
+        chatSection     = document.getElementById("chat-section-wrapper"),
+        chatArrow       = document.getElementById("chat-toggle-button"),
+        chatBox         = document.getElementById("chat-container");
 
-  function applyChat(n) {
-    chatSection.classList.toggle("d-none", !n);
-    chatToggle.checked = n;
-    if (!n) {
+  function applyChat(v) {
+    chatSection.classList.toggle("d-none", !v);
+    chatToggle.checked = v;
+    if (!v) {
       chatArrow.classList.remove("expanded");
       chatBox.classList.remove("expanded");
     }
-    document.querySelectorAll(".station-action-button").forEach(button => {
-      button.classList.toggle("d-none", !n);
-    });
+    document.querySelectorAll(".station-action-button")
+            .forEach(b => b.classList.toggle("d-none", !v));
   }
-
-  function applyPersonal(n) {
-    document.querySelectorAll(".personal-toggle-item").forEach(t =>
-      t.classList.toggle("d-none", !n) // ← Use d-none for Bootstrap
-    );
-    personalToggle.checked = n;
+  function applyPersonal(v) {
+    document.querySelectorAll(".personal-toggle-item")
+            .forEach(elem => elem.classList.toggle("d-none", !v));
+    personalToggle.checked = v;
+  }
+  function applySarcastic(v) {
+    sarcasticToggle.checked = v;          // UI only – nothing else visible
   }
 
   /* initial state */
   applyChat(localStorage.getItem("chatVisible") === "true");
   applyPersonal(getCookie("personalMessageVisible") !== "false");
+  applySarcastic(getCookie("sarcasticAI") === "true");  // default OFF
 
   chatToggle.addEventListener("change", e => {
-    const n = e.target.checked;
-    applyChat(n);
-    localStorage.setItem("chatVisible", n);
+    const v = e.target.checked;
+    applyChat(v);
+    localStorage.setItem("chatVisible", v);
   });
-
   personalToggle.addEventListener("change", e => {
-    const n = e.target.checked;
-    applyPersonal(n);
-    setCookie("personalMessageVisible", n, 365);
+    const v = e.target.checked;
+    applyPersonal(v);
+    setCookie("personalMessageVisible", v, 365);
+  });
+  sarcasticToggle.addEventListener("change", e => {
+    const v = e.target.checked;
+    applySarcastic(v);
+    setCookie("sarcasticAI", v, 365);
   });
 
-  /* chat arrow */
+  /* -------- chat arrow -------- */
   chatArrow.addEventListener("click", () => {
     if (chatSection.classList.contains("d-none")) return;
     chatArrow.classList.toggle("expanded");
@@ -265,139 +286,137 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* chat send */
+  /* -------- chat send -------- */
   const sendBtn = document.getElementById("send-button"),
-        userIn = document.getElementById("user-input"),
-        msgBox = document.getElementById("chat-messages"),
-        webhook = "https://n8n.biolawizard.com/webhook/ddaed16e-73be-4de6-b3e2-8e246f0765fc";
+        userIn  = document.getElementById("user-input"),
+        msgBox  = document.getElementById("chat-messages"),
+        chatHook = "https://n8n.biolawizard.com/webhook/ddaed16e-73be-4de6-b3e2-8e246f0765fc";
 
-  function addMsg(n, t) {
-    const e = document.createElement("div");
-    e.className = "message " + t;
-    e.textContent = n;
-    msgBox.prepend(e);
+  function addMsg(txt, cls) {
+    const div = document.createElement("div");
+    div.className = "message " + cls;
+    div.textContent = txt;
+    msgBox.prepend(div);
   }
-
   async function sendMsg() {
-    const n = userIn.value.trim();
-    if (!n) return;
-    addMsg(n, "user-message");
+    const txt = userIn.value.trim();
+    if (!txt) return;
+    addMsg(txt, "user-message");
     userIn.value = "";
     sendBtn.disabled = true;
     try {
-      const t = await fetch(webhook, {
+      const rsp = await fetch(chatHook, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: n })
+        body: JSON.stringify({ message: txt })
       });
-      const e = await t.json();
-      addMsg((e?.reply) ?? "(no reply)", "bot-message");
-    } catch (t) {
-      addMsg("Error: " + t, "error-message");
+      const data = await rsp.json();
+      addMsg(data?.reply ?? "(no reply)", "bot-message");
+    } catch (err) {
+      addMsg("Error: " + err, "error-message");
     } finally {
       sendBtn.disabled = false;
     }
   }
-
   sendBtn.addEventListener("click", sendMsg);
-  userIn.addEventListener("keypress", n => {
-    if (n.key === "Enter") sendMsg();
-  });
-
-  let activeResponseBox = null;   // currently‑open box
-  let closeListener    = null;    // outside‑click listener
-
-  function closeAllResponseBoxes() {
-    // 1. collapse any open box
-    if (activeResponseBox) {
-      activeResponseBox.classList.remove("visible");
-      activeResponseBox.innerHTML = "";          // clear previous reply / spinner
-      activeResponseBox = null;
-    }
-
-    // 2. re‑enable all station buttons
-    document.querySelectorAll(".station-action-button")
-            .forEach(btn => (btn.disabled = false));
-
-    // 3. remove the global click listener
-    if (closeListener) {
-      document.removeEventListener("click", closeListener);
-      closeListener = null;
-    }
-  }
+  userIn.addEventListener("keypress", e => { if (e.key === "Enter") sendMsg(); });
 
   /* -------------------------------------------------
-     Main click handler for every “info” button
+     Station‑response logic with outside‑click close
   --------------------------------------------------*/
   const stationWebhookUrl =
     "https://n8n.biolawizard.com/webhook-test/3666ea52-5393-408a-a9ef-f7c78f9c5eb4";
 
-  document.querySelectorAll(".station-action-button").forEach(button => {
-    button.addEventListener("click", async event => {
-      const currentButton = event.currentTarget;
-      const stationBlock  = currentButton.closest(".station-block");
-      const mealList      = stationBlock?.querySelector(".station-meal-list");
-      const responseBox   = stationBlock?.querySelector(".station-response-box");
-      if (!mealList || !responseBox) return;
+  let activeResponseBox = null;
+  let closeListener     = null;
 
-      /* --- toggle behaviour --- */
-      if (responseBox === activeResponseBox) {
+  function closeAllResponseBoxes() {
+    if (activeResponseBox) {
+      activeResponseBox.classList.remove("visible");
+      activeResponseBox.innerHTML = "";
+      activeResponseBox = null;
+    }
+    document.querySelectorAll(".station-action-button")
+            .forEach(btn => (btn.disabled = false));
+    if (closeListener) {
+      document.removeEventListener("click", closeListener, true);
+      closeListener = null;
+    }
+  }
+
+  document.querySelectorAll(".station-action-button").forEach(button => {
+    button.addEventListener("click", async evt => {
+      const currentButton = evt.currentTarget;
+      const block   = currentButton.closest(".station-block");
+      const mealUL  = block?.querySelector(".station-meal-list");
+      const respBox = block?.querySelector(".station-response-box");
+      if (!mealUL || !respBox) return;
+
+      if (respBox === activeResponseBox) {
         closeAllResponseBoxes();
         return;
       }
-      closeAllResponseBoxes();        // close anything that was open first
+      closeAllResponseBoxes();
 
-      /* --- build payload & show spinner --- */
-      activeResponseBox = responseBox;
-      const mealsPayload = [...mealList.querySelectorAll("li[data-meal-name]")].map(li => ({
-        title:       li.dataset.mealName,
-        description: li.dataset.mealDesc
-      }));
+      /* build payload */
+      const mealsPayload = [...mealUL.querySelectorAll("li[data-meal-name]")]
+        .map(li => ({
+          title:       li.dataset.mealName,
+          description: li.dataset.mealDesc
+        }));
+      const useSarcasm = sarcasticToggle.checked;  /* new toggle value */
 
-      responseBox.innerHTML =
+      /* show spinner */
+      activeResponseBox = respBox;
+      respBox.innerHTML =
         `<div class="d-flex align-items-center p-2">
            <span class="spinner-border spinner-border-sm me-2"></span> Loading…
          </div>`;
-      responseBox.classList.add("visible");
+      respBox.classList.add("visible");
       currentButton.disabled = true;
 
-      /* --- call n8n webhook --- */
       try {
-        const rsp  = await fetch(stationWebhookUrl, {
+        const rsp = await fetch(stationWebhookUrl, {
           method : "POST",
           headers: { "Content-Type": "application/json" },
-          body   : JSON.stringify({ station_meals: mealsPayload })
-        });
+          body   : JSON.stringify(
+          (() => {
+            const payload = { station_meals: mealsPayload };
+            if (useSarcasm) {
+              payload.extra_prompt =
+                "Be a little bit cynical, the meal will probalby not taste very good.";
+            }
+            return payload;
+            })()                // end IIFE
+            )                     // <- close JSON.stringify
+        }); 
         if (!rsp.ok) throw new Error(`status ${rsp.status}`);
         const data = await rsp.json();
-
-        responseBox.innerHTML =
+        respBox.innerHTML =
           `<div class="p-2">${data.reply || "No response content received."}</div>`;
       } catch (err) {
         console.error(err);
-        responseBox.innerHTML =
+        respBox.innerHTML =
           `<div class="p-2 text-danger">Error loading data. Please try again.</div>`;
       } finally {
         currentButton.disabled = false;
 
-        /* --- register one global outside‑click listener --- */
-        closeListener = evt => {
-          const clickedOutside =
-            activeResponseBox &&
-            !activeResponseBox.contains(evt.target) &&
-            !currentButton.contains(evt.target);
-
-          if (clickedOutside) closeAllResponseBoxes();
+        /* outside‑click listener (capture phase) */
+        closeListener = ev => {
+          if (activeResponseBox &&
+              !activeResponseBox.contains(ev.target) &&
+              !currentButton.contains(ev.target)) {
+            closeAllResponseBoxes();
+          }
         };
-        // Use capture phase so we fire before Bootstrap’s own handlers
-        document.addEventListener("click", closeListener, { capture: true });
+        document.addEventListener("click", closeListener, true);
       }
     });
   });
 
-
+  /* -------- kick things off -------- */
   displayTime();
-  setInterval(displayTime, 60000); // update every minute
+  setInterval(displayTime, 60_000);
 });
 </script>
 </body>
