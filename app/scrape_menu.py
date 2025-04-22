@@ -124,56 +124,54 @@ def _scrape_structured_menu(url, target_stations):
     return structured_menu
 
 
-def get_menu_data_for_template():
+def get_menu_data_for_template() -> dict:
     """
-    Public function to fetch and transform menu data for the Flask template.
-    Filters out specific unwanted meal options during transformation.
+    Fetch and transform menu data for the Flask template.
+    Now keeps both 'meal' and optional 'description' for every option.
     """
-    URL = "https://legacy.cafebonappetit.com/print-menu/cafe/17/menu/545346/days/today/pgbrks/0/"
-    TARGET_STATIONS = ["Kettle", "Chefs Table", "CHEF'S TABLE", "6th st grill", "6TH ST. GRILL", "home cookin", "HOME COOKIN'", "Pizzeria"]
-
-    # Define the specific meal text to filter out (case-insensitive)
+    URL = ("https://legacy.cafebonappetit.com/print-menu/cafe/17/"
+           "menu/545346/days/today/pgbrks/0/")
+    TARGET_STATIONS = [
+        "Kettle", "Chefs Table", "CHEF'S TABLE",
+        "6th st grill", "6TH ST. GRILL",
+        "home cookin", "HOME COOKIN'",
+        "Pizzeria"
+    ]
     unwanted_meal_text = "vegan and made without gluten pizza available upon request"
 
-    scraped_data = _scrape_structured_menu(URL, TARGET_STATIONS)
+    scraped = _scrape_structured_menu(URL, TARGET_STATIONS)
     template_data = {'breakfast': [], 'lunch': [], 'dinner': []}
 
-    if not scraped_data:
-        logging.warning("No data scraped, returning empty structure for template.")
+    if not scraped:
+        logging.warning("No data scraped, returning empty structure.")
         return template_data
 
-    for meal_period, stations in scraped_data.items():
+    for meal_period, stations in scraped.items():
         period_key = meal_period.lower()
-        if period_key in template_data:
-            logging.debug(f"Transforming data for meal period: {period_key}")
-            for station_name, meal_items in stations.items():
+        if period_key not in template_data:
+            logging.warning("Skipping unknown meal period: %s", meal_period)
+            continue
 
-                # Extract meal names, applying the filter
-                meal_options = [
-                    item['meal']
-                    for item in meal_items
-                    if item.get('meal')                           # Ensure meal key exists
-                    and item['meal'] != "Unknown Item"             # Exclude placeholder items
-                    # --- Add filter condition ---
-                    and item['meal'].lower().strip() != unwanted_meal_text
-                ]
+        for station_name, meal_items in stations.items():
+            # keep full dict (meal + description) and filter unwanted text
+            filtered = [
+                {
+                    'meal': item['meal'],
+                    'description': item.get('description')
+                }
+                for item in meal_items
+                if item.get('meal') and item['meal'] != "Unknown Item"
+                   and item['meal'].lower().strip() != unwanted_meal_text
+            ]
 
-                if meal_options:
-                    template_data[period_key].append({
-                        'name': station_name,
-                        'options': meal_options
-                    })
-                    logging.debug(f"Added Station: {station_name} with options: {meal_options} to {period_key}")
-        else:
-             logging.warning(f"Skipping transformation for unknown meal period: {meal_period}")
-
+            if filtered:
+                template_data[period_key].append({
+                    'name': station_name,
+                    'options': filtered
+                })
 
     logging.info("Menu data transformation complete.")
     return template_data
 
-# --- Main execution block for testing ---
-if __name__ == '__main__':
-    print("Testing scrape_menu module with filtering...")
-    menu_for_template = get_menu_data_for_template()
-    print("\n--- Data for Template (Filtered) ---")
-    print(json.dumps(menu_for_template, indent=4))
+if __name__ == "__main__":
+    print(json.dumps(get_menu_data_for_template(), indent=2))
