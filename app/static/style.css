@@ -309,3 +309,60 @@
     .d-none { 
         display: none !important; /* Ensure Bootstrap's d-none works */
     } 
+
+   /* --- Rating System Styles --- */
+.rating-area {
+    font-size: 0.9rem; 
+    /* Removed padding-left: ps-3 utility class used instead if needed */
+    /* Removed padding-top: pt-1 utility class used instead */
+}
+
+.stars-display i {
+    font-size: 1rem; 
+    margin-right: 2px;
+}
+
+/* Ensure rating area is below meal title/desc button */
+li .meal-title { 
+    display: inline-block; /* Or block depending on desired layout */
+}
+li .rating-area {
+    /* Adjust margin if needed, e.g., */
+    /* margin-top: 0.25rem; */
+}
+
+/* Styles for Interactive Modal Stars */
+.rating-stars-interactive .rating-star {
+    font-size: 1.8rem; 
+    color: #ccc;       /* Default empty color */
+    cursor: pointer;
+    /* Removed margin: 0 2px; using mx-1 utility class instead */
+    transition: color 0.15s ease-in-out, transform 0.15s ease; /* Add transform */
+    display: inline-block; /* Ensure they behave like inline blocks */
+}
+
+/* Hover effect for interactive stars */
+.rating-stars-interactive .rating-star:hover {
+   transform: scale(1.15); /* Slightly enlarge on hover */
+}
+
+/* Style for filled stars (set by JS) */
+.rating-stars-interactive .bi-star-fill {
+    color: #ffc107; /* Gold color for filled */
+}
+
+.rate-meal-btn[disabled] {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+.rate-meal-btn[disabled] i { /* Ensure icon is also dimmed */
+    opacity: 0.65;
+}
+.rate-meal-btn i { /* Align icon better with text */
+    vertical-align: text-bottom;
+    margin-right: 0.2rem;
+}
+
+#rating-feedback {
+    min-height: 1.2em; 
+}
