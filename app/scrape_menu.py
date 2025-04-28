@@ -130,7 +130,8 @@ def get_menu_data_for_template() -> dict:
     Now keeps both 'meal' and optional 'description' for every option.
     """
     URL = ("https://legacy.cafebonappetit.com/print-menu/cafe/17/"
-           "menu/545346/days/today/pgbrks/0/")
+           "menu/545549/days/today/pgbrks/0/")
+            #Previous Url "menu/545346/days/today/pgbrks/0/""
     TARGET_STATIONS = [
         "Kettle", "Chefs Table", "CHEF'S TABLE",
         "6th st grill", "6TH ST. GRILL",
