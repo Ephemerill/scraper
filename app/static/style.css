@@ -296,9 +296,6 @@
     }
     
     /* Optional: Loading spinner */
-    .station-response-box .spinner-border-sm {
-        /* ... spinner styles ... */
-    }
     
     /* Ensure buttons are hidden/shown with chat toggle correctly */
     .d-none { 
